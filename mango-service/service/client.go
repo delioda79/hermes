@@ -48,6 +48,8 @@ func (mgc MangoClient) connect(name string, version string, transport string) er
 				fmt.Println("Conn error", err.Error())
 			}
 		}
+		//LOOK at this for connection drops
+		//mgc.socket.SetPortHook()
 		time.Sleep(time.Minute)
 	}
 }
