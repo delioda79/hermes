@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"bitbucket.org/ConsentSystems/subscription-service/mango-service/registry"
-	"github.com/go-mangos/mangos"
+	"bitbucket.org/ConsentSystems/mango-micro/mango-service/registry"
+	"github.com/nanomsg/mangos"
 )
 
 // Client is a service client

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"log"
 
-	"bitbucket.org/ConsentSystems/subscription-service/mango-service/registry/consul"
-	"bitbucket.org/ConsentSystems/subscription-service/mango-service/service"
+	"bitbucket.org/ConsentSystems/mango-micro/mango-service/registry/consul"
+	"bitbucket.org/ConsentSystems/mango-micro/mango-service/service"
 	"github.com/go-mangos/mangos"
 	"github.com/go-mangos/mangos/protocol/pull"
 	"github.com/go-mangos/mangos/protocol/push"
