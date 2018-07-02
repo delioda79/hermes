@@ -5,11 +5,12 @@ import (
 	"fmt"
 	"strings"
 
-	"bitbucket.org/ConsentSystems/subscription-service/mango-service/registry"
+	"bitbucket.org/ConsentSystems/mango-micro/mango-service/registry"
 	"github.com/hashicorp/consul/api"
 	"github.com/pborman/uuid"
 )
 
+// NewRegistry returns a new registry instance
 func NewRegistry(config *api.Config) registry.Registry {
 	reg := &consulRegistry{}
 	if config == nil {
