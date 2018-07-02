@@ -2,7 +2,7 @@ package service
 
 import (
 	"bitbucket.org/ConsentSystems/mango-micro/mango-service/registry"
-	"github.com/nanomsg/mangos"
+	"nanomsg.org/go-mangos"
 )
 
 // Service represents a microservice base

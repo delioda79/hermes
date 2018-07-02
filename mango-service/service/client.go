@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"bitbucket.org/ConsentSystems/mango-micro/mango-service/registry"
-	"github.com/nanomsg/mangos"
+	"nanomsg.org/go-mangos"
 )
 
 // Client is a service client

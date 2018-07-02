@@ -9,10 +9,10 @@ import (
 
 	"bitbucket.org/ConsentSystems/mango-micro/mango-service/registry/consul"
 	"bitbucket.org/ConsentSystems/mango-micro/mango-service/service"
-	"github.com/nanomsg/mangos"
-	"github.com/nanomsg/mangos/protocol/pull"
-	"github.com/nanomsg/mangos/protocol/push"
-	"github.com/nanomsg/mangos/transport/tcp"
+	"nanomsg.org/go-mangos"
+	"nanomsg.org/go-mangos/protocol/pull"
+	"nanomsg.org/go-mangos/protocol/push"
+	"nanomsg.org/go-mangos/transport/tcp"
 )
 
 func main() {

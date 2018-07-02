@@ -8,7 +8,7 @@ import (
 	"syscall"
 
 	"bitbucket.org/ConsentSystems/mango-micro/mango-service/registry"
-	"github.com/nanomsg/mangos"
+	"nanomsg.org/go-mangos"
 )
 
 // Server represents a microservice base
