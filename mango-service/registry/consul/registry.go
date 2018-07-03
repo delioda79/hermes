@@ -13,10 +13,13 @@ import (
 // NewRegistry returns a new registry instance
 func NewRegistry(config *api.Config) registry.Registry {
 	reg := &consulRegistry{}
+	var conf *api.Config
 	if config == nil {
-		reg.configs = api.DefaultConfig()
+		conf = api.DefaultConfig()
+	} else {
+		conf = config
 	}
-
+	reg.configs = conf
 	return reg
 }
 
