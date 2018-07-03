@@ -56,19 +56,22 @@ func (mgc *MangoClient) connect(name string, version string, transport string) e
 				fmt.Println("Conn error", err.Error())
 			}
 			fmt.Println("CONNECTED ", connStr)
+			mgc.conns = append(mgc.conns, connStr)
 		}
 		//LOOK at this for connection drops
 		mgc.socket.SetPortHook(func(action mangos.PortAction, port mangos.Port) bool {
-			for i, v := range mgc.conns {
-				if port.Address() == v {
-					mgc.conns = append(mgc.conns[:i], mgc.conns[i+1:]...)
-					port.Close()
-					fmt.Println("DROPPED ", port.Address())
+			if action == mangos.PortActionRemove {
+				for i, v := range mgc.conns {
+					if port.Address() == v {
+						mgc.conns = append(mgc.conns[:i], mgc.conns[i+1:]...)
+						port.Close()
+						fmt.Println("DROPPED ", port.Address())
+					}
 				}
 			}
 
 			return true
 		})
-		time.Sleep(time.Minute)
+		time.Sleep(time.Second * 10)
 	}
 }

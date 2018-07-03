@@ -14,7 +14,7 @@ import (
 // Server represents a microservice base
 type Server interface {
 	Service
-	Run(name, addr string, port int, transport string)
+	Run(name, addr string, port int, transport string, version string)
 	Deregister()
 	GetID() string
 }
@@ -33,14 +33,18 @@ func NewMangoServer(sock mangos.Socket, reg registry.Registry) Server {
 }
 
 // Run runs the service
-func (mgs *MangoServer) Run(name, addr string, port int, transport string) {
+func (mgs *MangoServer) Run(name, addr string, port int, transport string, version string) {
 
 	url := fmt.Sprintf("%s://%s:%d", transport, addr, port)
 	if err := mgs.socket.Listen(url); err != nil {
 		log.Fatal("can't listen on rep socket:", err.Error())
 	}
+	if version == "" {
+		version = "1"
+	}
 
-	sID, err := mgs.registry.Register(name, "", port, []string{"v=1"})
+	tags := []string{"v=" + version}
+	sID, err := mgs.registry.Register(name, "", port, tags)
 	if err != nil {
 		log.Fatal("Wrong registration ", err.Error())
 	}

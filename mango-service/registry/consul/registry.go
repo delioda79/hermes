@@ -82,7 +82,7 @@ func (cr consulRegistry) Get(name string, version string) ([]string, error) {
 
 		// version is now a tag
 		servVers := decodeVersion(s.Service.Tags)
-		if servVers != version {
+		if version != "" && servVers != version {
 			continue
 		}
 
