@@ -14,7 +14,6 @@ import (
 	"github.com/hashicorp/consul/api"
 	mangos "nanomsg.org/go-mangos"
 	"nanomsg.org/go-mangos/protocol/sub"
-	"nanomsg.org/go-mangos/transport/tcp"
 )
 
 // Subscriber is the subscriber
@@ -78,7 +77,6 @@ func NewSubscriber(regAddr string) Subscriber {
 	if subSock, err = sub.NewSocket(); err != nil {
 		log.Fatal("can't get new req socket: ", err.Error())
 	}
-	subSock.AddTransport(tcp.NewTransport())
 
 	registry := consul.NewRegistry(&api.Config{
 		Address: regAddr,
