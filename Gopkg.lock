@@ -41,6 +41,7 @@
   name = "nanomsg.org/go-mangos"
   packages = [
     ".",
+    "protocol/pub",
     "protocol/pull",
     "protocol/push",
     "protocol/sub",
@@ -52,6 +53,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "df13570a2745819ca893cbba3d135c95e7d826342923828d285008c3674e5e6d"
+  inputs-digest = "1f3283b91419c33dbd724bdb5a4f4d46aa7b32cd18c770ffc7a5b6c5e53a13a5"
   solver-name = "gps-cdcl"
   solver-version = 1
