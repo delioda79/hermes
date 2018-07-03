@@ -10,7 +10,7 @@ type Service interface {
 	Send(msg []byte) error
 	Receive() ([]byte, error)
 	Sock() mangos.Socket
-	Registry(msg []byte) registry.Registry
+	Registry() registry.Registry
 }
 
 // MangoService represents a service using mangos sockets
@@ -40,11 +40,11 @@ func (mgs MangoService) Receive() ([]byte, error) {
 }
 
 // Sock returns theinternal socket
-func (mgs MangoService) Sock() mangos.Socket {
+func (mgs *MangoService) Sock() mangos.Socket {
 	return mgs.socket
 }
 
 // Registry returns theinternal registry
-func (mgs MangoService) Registry(msg []byte) registry.Registry {
+func (mgs *MangoService) Registry() registry.Registry {
 	return mgs.registry
 }

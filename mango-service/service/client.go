@@ -38,6 +38,7 @@ func (mgc MangoClient) connect(name string, version string, transport string) er
 	for {
 		urls, err := mgc.registry.Get(name, version)
 		if err != nil {
+			time.Sleep(time.Second * 10)
 			continue
 		}
 		for _, url := range urls {
