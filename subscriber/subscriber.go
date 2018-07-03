@@ -1,30 +1,69 @@
 package subscriber
 
 import (
+	"encoding/json"
 	"flag"
+	"fmt"
 	"log"
 
+	"bitbucket.org/ConsentSystems/mango-micro/handler"
 	"bitbucket.org/ConsentSystems/mango-micro/mango-service/registry/consul"
 	"bitbucket.org/ConsentSystems/mango-micro/mango-service/service"
+	"bitbucket.org/ConsentSystems/mango-micro/messages"
+	"github.com/hashicorp/consul/api"
 	mangos "nanomsg.org/go-mangos"
 	"nanomsg.org/go-mangos/protocol/sub"
 	"nanomsg.org/go-mangos/transport/tcp"
 )
 
+// Subscriber is the subscriber
 type Subscriber interface {
 	AddTransport(tr mangos.Transport)
+	Run(pbs ...Publisher)
+	AddHandler(handler handler.Handler)
 }
 type defaultSubscriber struct {
-	receiveSocket mangos.Socket
-	client        service.Client
+	client   service.Client
+	handlers []handler.Handler
 }
 
-// AddTransport adds a transport to the workers pool manager
+// AddTransport adds a transport to the subscriber's socket
 func (sub *defaultSubscriber) AddTransport(tr mangos.Transport) {
 	sub.client.Sock().AddTransport(tr)
 }
 
-func NewSubscriber() service.Client {
+// Run runs the subscriber
+func (sub *defaultSubscriber) Run(pbs ...Publisher) {
+	for _, p := range pbs {
+		sub.client.Connect(p.Name, p.Version, p.Protocol)
+	}
+
+	for {
+		bts, err := sub.client.Receive()
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		msg := &messages.Trigger{}
+		err = json.Unmarshal(bts, msg)
+		if err != nil {
+			fmt.Println("error unmsrshaling", err)
+			continue
+		}
+
+		for _, hdl := range sub.handlers {
+			go hdl.Run(msg.Name, msg.Params)
+		}
+	}
+}
+
+// AddHandler adds a hand;er to the subscriber
+func (sub *defaultSubscriber) AddHandler(handler handler.Handler) {
+	sub.handlers = append(sub.handlers, handler)
+}
+
+// NewSubscriber returns a new Subscriber
+func NewSubscriber(regAddr string) Subscriber {
 	var subSock mangos.Socket
 	var err error
 
@@ -35,7 +74,21 @@ func NewSubscriber() service.Client {
 	}
 	subSock.AddTransport(tcp.NewTransport())
 
-	registry := consul.NewRegistry(nil)
+	registry := consul.NewRegistry(&api.Config{
+		Address: regAddr,
+		Scheme:  "http",
+	})
 
-	return service.NewMangoClient(subSock, registry)
+	client := service.NewMangoClient(subSock, registry)
+
+	return &defaultSubscriber{
+		client:   client,
+		handlers: []handler.Handler{},
+	}
+}
+
+type Publisher struct {
+	Name     string
+	Protocol string
+	Version  string
 }

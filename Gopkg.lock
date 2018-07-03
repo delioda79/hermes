@@ -43,6 +43,7 @@
     ".",
     "protocol/pull",
     "protocol/push",
+    "protocol/sub",
     "transport/tcp"
   ]
   revision = "c289f0f3165d00720e9dcef856b52d799f0bb008"
@@ -51,6 +52,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "58a69b17dacffb588a4b0df1e3f24e65d53d2dd5197559a4d094736398711fd8"
+  inputs-digest = "df13570a2745819ca893cbba3d135c95e7d826342923828d285008c3674e5e6d"
   solver-name = "gps-cdcl"
   solver-version = 1
