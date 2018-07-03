@@ -11,6 +11,7 @@ import (
 type Server interface {
 	AddTransport(tr mangos.Transport)
 	Run(port int, transport, addr string)
+	Sock() Publisher
 }
 type defaultServer struct {
 	server  service.Server
@@ -21,6 +22,11 @@ type defaultServer struct {
 // AddTransport adds a transport to the subscriber's socket
 func (pubs *defaultServer) AddTransport(tr mangos.Transport) {
 	pubs.server.Sock().AddTransport(tr)
+}
+
+func (pubs *defaultServer) Sock() Publisher {
+	sock := pubs.server.Sock().(Publisher)
+	return sock
 }
 
 // Run runs the subscriber
