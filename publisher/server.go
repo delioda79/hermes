@@ -57,6 +57,8 @@ func NewServer(
 	server := service.NewMangoServer(pubSock, registry)
 
 	return &defaultServer{
-		server: server,
+		server:  server,
+		name:    serviceName,
+		version: version,
 	}, nil
 }
