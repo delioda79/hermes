@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"os"
 
 	"bitbucket.org/ConsentSystems/mango-micro/handler"
 	"bitbucket.org/ConsentSystems/mango-micro/mango-service/registry/consul"
@@ -38,6 +39,11 @@ func (sub *defaultSubscriber) Run(pbs ...Publisher) {
 		sub.client.Connect(p.Name, p.Version, p.Protocol)
 	}
 
+	err := sub.client.Sock().SetOption(mangos.OptionSubscribe, []byte(""))
+	if err != nil {
+		fmt.Println("Impossible to subscribe", err)
+		os.Exit(1)
+	}
 	for {
 		bts, err := sub.client.Receive()
 		if err != nil {
