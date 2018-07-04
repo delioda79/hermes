@@ -64,7 +64,7 @@ func (mgc *MangoClient) connect(name string, version string, transport string) e
 				for i, v := range mgc.conns {
 					if port.Address() == v {
 						mgc.conns = append(mgc.conns[:i], mgc.conns[i+1:]...)
-						port.Close()
+						port.Dialer().Close()
 						fmt.Println("DROPPED ", port.Address())
 					}
 				}

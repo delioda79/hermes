@@ -57,7 +57,14 @@ func (sub *defaultSubscriber) Run(pbs ...Publisher) {
 		}
 
 		for _, hdl := range sub.handlers {
-			go hdl.Run(msg.Name, msg.Params)
+			go func(hdl handler.Handler) {
+				defer func() {
+					if r := recover(); r != nil {
+						fmt.Println("Recovered from: ", r)
+					}
+				}()
+				hdl.Run(msg.Name, msg.Params)
+			}(hdl)
 		}
 	}
 }
