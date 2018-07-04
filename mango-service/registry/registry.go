@@ -4,5 +4,5 @@ package registry
 type Registry interface {
 	Register(name, address string, port int, tags []string) (string, error)
 	Deregister(id string) error
-	Get(name string, version string) ([]string, error)
+	Get(name string, version, transport string) ([]string, error)
 }

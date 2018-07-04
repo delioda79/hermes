@@ -36,15 +36,19 @@ func NewMangoServer(sock mangos.Socket, reg registry.Registry) Server {
 func (mgs *MangoServer) Run(name, addr string, port int, transport string, version string) {
 
 	url := fmt.Sprintf("%s://%s:%d", transport, addr, port)
+	fmt.Println("URL IS ", url)
 	if err := mgs.socket.Listen(url); err != nil {
-		log.Fatal("can't listen on rep socket:", err.Error())
+		log.Fatal("can't listen on socket:", err.Error())
 	}
 	if version == "" {
 		version = "1"
 	}
 
-	tags := []string{"v=" + version}
-	sID, err := mgs.registry.Register(name, "", port, tags)
+	tags := []string{
+		"v=" + version,
+		"transport=" + transport,
+	}
+	sID, err := mgs.registry.Register(name, addr, port, tags)
 	if err != nil {
 		log.Fatal("Wrong registration ", err.Error())
 	}

@@ -38,7 +38,7 @@ func (mgc *MangoClient) Connect(name string, version string, transport string) {
 // Connect connects to another socket
 func (mgc *MangoClient) connect(name string, version string, transport string) error {
 	for {
-		urls, err := mgc.registry.Get(name, version)
+		urls, err := mgc.registry.Get(name, version, transport)
 		if err != nil {
 			time.Sleep(time.Second * 10)
 			continue

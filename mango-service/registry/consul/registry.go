@@ -64,7 +64,7 @@ func (cr consulRegistry) Deregister(id string) error {
 	return nil
 }
 
-func (cr consulRegistry) Get(name string, version string) ([]string, error) {
+func (cr consulRegistry) Get(name string, version string, transport string) ([]string, error) {
 	cl, err := api.NewClient(cr.configs)
 	if err != nil {
 		return []string{}, err
@@ -86,6 +86,10 @@ func (cr consulRegistry) Get(name string, version string) ([]string, error) {
 			continue
 		}
 
+		servTransport := decodeTransp(s.Service.Tags)
+		if transport != "" && servTransport != transport {
+			continue
+		}
 		// service ID is now the node id
 		id := s.Service.ID
 
@@ -134,6 +138,17 @@ func decodeVersion(tags []string) string {
 	for i := 0; i < len(tags); i++ {
 		parts := strings.Split(tags[i], "=")
 		if parts[0] == "v" && len(parts) == 2 {
+			return parts[1]
+		}
+	}
+
+	return ""
+}
+
+func decodeTransp(tags []string) string {
+	for i := 0; i < len(tags); i++ {
+		parts := strings.Split(tags[i], "=")
+		if parts[0] == "transport" && len(parts) == 2 {
 			return parts[1]
 		}
 	}
