@@ -4,4 +4,5 @@ package messages
 type Trigger struct {
 	Name   string
 	Params []byte
+	UID    string
 }

@@ -46,11 +46,11 @@ func (reps *defaultServer) Run(port int, transport, addr string) {
 		reps.version,
 	)
 	for {
-		bts, err := reps.server.Sock().Recv()
+		rawMsg, err := reps.server.Sock().RecvMsg()
 		if err != nil {
 			fmt.Println(err)
 		}
-
+		bts := rawMsg.Body
 		msg := &messages.Trigger{}
 		err = json.Unmarshal(bts, msg)
 		if err != nil {
@@ -59,7 +59,7 @@ func (reps *defaultServer) Run(port int, transport, addr string) {
 		}
 
 		for _, hdl := range reps.handlers {
-			go func(hdl handler.Handler) {
+			go func(hdl handler.Handler, origMsg *mangos.Message) {
 				defer func() {
 					if r := recover(); r != nil {
 						fmt.Println("Recovered from: ", r)
@@ -67,8 +67,10 @@ func (reps *defaultServer) Run(port int, transport, addr string) {
 				}()
 				rsp := []byte{}
 				hdl.Run(msg.Name, msg.Params, rsp)
-				reps.server.Sock().Send(rsp)
-			}(hdl)
+				response := mangos.Message(*origMsg)
+				response.Body = rsp
+				reps.server.Sock().SendMsg(&response)
+			}(hdl, rawMsg)
 		}
 	}
 
@@ -84,11 +86,15 @@ func NewServer(
 		Scheme:  "http",
 	})
 
-	pullSock, err := rep.NewSocket()
+	repSock, err := rep.NewSocket()
 	if err != nil {
 		return nil, err
 	}
-	server := service.NewMangoServer(pullSock, registry)
+
+	if err = repSock.SetOption(mangos.OptionRaw, true); err != nil {
+		return nil, fmt.Errorf("can't set raw mode: %s", err.Error())
+	}
+	server := service.NewMangoServer(repSock, registry)
 
 	return &defaultServer{
 		server:   server,
