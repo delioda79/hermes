@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"bitbucket.org/ConsentSystems/mango-micro/mango-service/registry"
+	"bitbucket.org/ddanna79/mango-micro/mango-service/registry"
 	"nanomsg.org/go-mangos"
 )
 
@@ -43,6 +43,7 @@ func (mgc *MangoClient) connect(name string, version string, transport string) e
 			time.Sleep(time.Second * 10)
 			continue
 		}
+
 	OUTER:
 		for _, url := range urls {
 			connStr := fmt.Sprintf("%s://%s", transport, url)

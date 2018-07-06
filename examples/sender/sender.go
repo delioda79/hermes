@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"time"
 
-	"bitbucket.org/ConsentSystems/mango-micro/mango-service/registry/consul"
-	"bitbucket.org/ConsentSystems/mango-micro/mango-service/service"
+	"bitbucket.org/ddanna79/mango-micro/mango-service/registry/consul"
+	"bitbucket.org/ddanna79/mango-micro/mango-service/service"
 	"nanomsg.org/go-mangos"
 	"nanomsg.org/go-mangos/protocol/pull"
 	"nanomsg.org/go-mangos/protocol/push"

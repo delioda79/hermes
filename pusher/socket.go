@@ -3,9 +3,9 @@ package pusher
 import (
 	"encoding/json"
 
-	"nanomsg.org/go-mangos/protocol/pub"
+	"nanomsg.org/go-mangos/protocol/push"
 
-	"bitbucket.org/ConsentSystems/mango-micro/messages"
+	"bitbucket.org/ddanna79/mango-micro/messages"
 	mangos "nanomsg.org/go-mangos"
 )
 
@@ -33,7 +33,7 @@ func (pubs *defaultPusher) Push(name string, message []byte) error {
 }
 
 func NewPusher() (Pusher, error) {
-	sock, err := pub.NewSocket()
+	sock, err := push.NewSocket()
 	if err != nil {
 		return nil, err
 	}

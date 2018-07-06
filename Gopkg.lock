@@ -2,6 +2,18 @@
 
 
 [[projects]]
+  branch = "development"
+  name = "bitbucket.org/ddanna79/mango-micro"
+  packages = [
+    "handler",
+    "mango-service/registry",
+    "mango-service/registry/consul",
+    "mango-service/service",
+    "messages"
+  ]
+  revision = "f86d09a02b2a3ca515faf14d73bf354481bd84f4"
+
+[[projects]]
   name = "github.com/hashicorp/consul"
   packages = ["api"]
   revision = "5174058f0d2bda63fa5198ab96c33d9a909c58ed"
@@ -45,7 +57,9 @@
     "protocol/pull",
     "protocol/push",
     "protocol/rep",
+    "protocol/req",
     "protocol/sub",
+    "transport/inproc",
     "transport/tcp"
   ]
   revision = "c289f0f3165d00720e9dcef856b52d799f0bb008"
@@ -54,6 +68,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "f46e4fd5ea921a5390010abb08f8077f22b8e1139e7e2b2e5f5fdaba494a3d9f"
+  inputs-digest = "5007da6943d72379bf03eb435d99306205f2824c2e680969a1f7e0c7df357af9"
   solver-name = "gps-cdcl"
   solver-version = 1

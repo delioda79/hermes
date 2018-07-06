@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"bitbucket.org/ConsentSystems/mango-micro/handler"
-	"bitbucket.org/ConsentSystems/mango-micro/mango-service/registry/consul"
-	"bitbucket.org/ConsentSystems/mango-micro/mango-service/service"
-	"bitbucket.org/ConsentSystems/mango-micro/messages"
+	"bitbucket.org/ddanna79/mango-micro/handler"
+	"bitbucket.org/ddanna79/mango-micro/mango-service/registry/consul"
+	"bitbucket.org/ddanna79/mango-micro/mango-service/service"
+	"bitbucket.org/ddanna79/mango-micro/messages"
 	"github.com/hashicorp/consul/api"
 	mangos "nanomsg.org/go-mangos"
 	"nanomsg.org/go-mangos/protocol/rep"
@@ -46,16 +46,10 @@ func (reps *defaultServer) Run(port int, transport, addr string) {
 		reps.version,
 	)
 	for {
+		fmt.Println("WAITING FOR MSG")
 		rawMsg, err := reps.server.Sock().RecvMsg()
 		if err != nil {
 			fmt.Println(err)
-		}
-		bts := rawMsg.Body
-		msg := &messages.Trigger{}
-		err = json.Unmarshal(bts, msg)
-		if err != nil {
-			fmt.Println("error unmsrshaling", err)
-			continue
 		}
 
 		for _, hdl := range reps.handlers {
@@ -65,10 +59,23 @@ func (reps *defaultServer) Run(port int, transport, addr string) {
 						fmt.Println("Recovered from: ", r)
 					}
 				}()
-				rsp := []byte{}
+
+				bts := rawMsg.Body
+				msg := &messages.Trigger{}
+				err = json.Unmarshal(bts, msg)
+				if err != nil {
+					fmt.Println("error unmsrshaling", err)
+					return
+				}
+				rsp := &[]byte{}
 				hdl.Run(msg.Name, msg.Params, rsp)
+				msg.Params = *rsp
+				bts, err := json.Marshal(msg)
+				if err != nil {
+					return
+				}
 				response := mangos.Message(*origMsg)
-				response.Body = rsp
+				response.Body = bts
 				reps.server.Sock().SendMsg(&response)
 			}(hdl, rawMsg)
 		}

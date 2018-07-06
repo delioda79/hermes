@@ -5,12 +5,12 @@ import (
 )
 
 // HandleFunc represents the action for a psecific event
-type HandleFunc func(msg interface{}, rsp ...interface{}) error
+type HandleFunc func(msg interface{}, rsp ...*[]byte) error
 
 // Handler implements a base subscriber
 type Handler interface {
 	Add(name string, action HandleFunc) error
-	Run(name string, param interface{}, rsp ...[]byte) error
+	Run(name string, param interface{}, rsp ...*[]byte) error
 }
 
 type defaultHandler struct {
@@ -26,9 +26,10 @@ func (ds *defaultHandler) Add(name string, action HandleFunc) error {
 	return nil
 }
 
-func (ds *defaultHandler) Run(name string, param interface{}, rsp ...[]byte) error {
+func (ds *defaultHandler) Run(name string, param interface{}, rsp ...*[]byte) error {
 	if action, ok := ds.actions[name]; ok {
-		return action(param, rsp)
+		hdlf := action(param, rsp[0])
+		return hdlf
 	}
 
 	return fmt.Errorf("No action set for %s", name)

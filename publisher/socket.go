@@ -5,7 +5,7 @@ import (
 
 	"nanomsg.org/go-mangos/protocol/pub"
 
-	"bitbucket.org/ConsentSystems/mango-micro/messages"
+	"bitbucket.org/ddanna79/mango-micro/messages"
 	mangos "nanomsg.org/go-mangos"
 )
 

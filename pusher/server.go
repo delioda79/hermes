@@ -1,11 +1,8 @@
 package pusher
 
 import (
-	"encoding/json"
-
-	"bitbucket.org/ConsentSystems/mango-micro/mango-service/registry/consul"
-	"bitbucket.org/ConsentSystems/mango-micro/mango-service/service"
-	"bitbucket.org/ConsentSystems/mango-micro/messages"
+	"bitbucket.org/ddanna79/mango-micro/mango-service/registry/consul"
+	"bitbucket.org/ddanna79/mango-micro/mango-service/service"
 	"github.com/hashicorp/consul/api"
 	mangos "nanomsg.org/go-mangos"
 )
@@ -28,20 +25,6 @@ func (sub *defaultServer) AddTransport(tr mangos.Transport) {
 func (sub *defaultServer) Sock() Pusher {
 	sock := sub.client.Sock().(Pusher)
 	return sock
-}
-
-func (sub *defaultServer) Push(name string, message []byte) error {
-	trg := &messages.Trigger{
-		Name:   name,
-		Params: message,
-	}
-
-	bts, err := json.Marshal(trg)
-	if err != nil {
-		return err
-	}
-	sub.client.Send(bts)
-	return nil
 }
 
 // Run runs the subscriber
