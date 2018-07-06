@@ -5,7 +5,7 @@ import (
 
 	"nanomsg.org/go-mangos/protocol/push"
 
-	"bitbucket.org/ddanna79/mango-micro/messages"
+	"bitbucket.org/ConsentSystems/mango-micro/messages"
 	mangos "nanomsg.org/go-mangos"
 )
 

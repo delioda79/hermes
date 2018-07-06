@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"sync"
 
-	"bitbucket.org/ddanna79/mango-micro/mango-service/registry/consul"
-	"bitbucket.org/ddanna79/mango-micro/mango-service/service"
-	"bitbucket.org/ddanna79/mango-micro/messages"
+	"bitbucket.org/ConsentSystems/mango-micro/mango-service/registry/consul"
+	"bitbucket.org/ConsentSystems/mango-micro/mango-service/service"
+	"bitbucket.org/ConsentSystems/mango-micro/messages"
 	"github.com/hashicorp/consul/api"
 	"github.com/pborman/uuid"
 	mangos "nanomsg.org/go-mangos"

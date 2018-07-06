@@ -1,8 +1,8 @@
 package pusher
 
 import (
-	"bitbucket.org/ddanna79/mango-micro/mango-service/registry/consul"
-	"bitbucket.org/ddanna79/mango-micro/mango-service/service"
+	"bitbucket.org/ConsentSystems/mango-micro/mango-service/registry/consul"
+	"bitbucket.org/ConsentSystems/mango-micro/mango-service/service"
 	"github.com/hashicorp/consul/api"
 	mangos "nanomsg.org/go-mangos"
 )

@@ -3,7 +3,7 @@ package requester
 import (
 	"encoding/json"
 
-	"bitbucket.org/ddanna79/mango-micro/messages"
+	"bitbucket.org/ConsentSystems/mango-micro/messages"
 	mangos "nanomsg.org/go-mangos"
 )
 

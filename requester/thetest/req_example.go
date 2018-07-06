@@ -8,9 +8,9 @@ import (
 	"strconv"
 	"time"
 
-	"bitbucket.org/ddanna79/mango-micro/handler"
-	"bitbucket.org/ddanna79/mango-micro/replier"
-	"bitbucket.org/ddanna79/mango-micro/requester"
+	"bitbucket.org/ConsentSystems/mango-micro/handler"
+	"bitbucket.org/ConsentSystems/mango-micro/replier"
+	"bitbucket.org/ConsentSystems/mango-micro/requester"
 	"nanomsg.org/go-mangos/transport/inproc"
 )
 

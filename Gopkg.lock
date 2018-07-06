@@ -3,7 +3,7 @@
 
 [[projects]]
   branch = "development"
-  name = "bitbucket.org/ddanna79/mango-micro"
+  name = "bitbucket.org/ConsentSystems/mango-micro"
   packages = [
     "handler",
     "mango-service/registry",

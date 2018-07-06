@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"bitbucket.org/ddanna79/mango-micro/mango-service/registry"
+	"bitbucket.org/ConsentSystems/mango-micro/mango-service/registry"
 	"nanomsg.org/go-mangos"
 )
 
