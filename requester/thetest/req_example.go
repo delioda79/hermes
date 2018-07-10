@@ -18,7 +18,8 @@ type ourStruct struct {
 	Message string
 }
 
-func CreateReplier() {
+func CreateReplier(port int, name string) {
+	fmt.Println("Creating ", port)
 	rep, err := replier.NewServer(":8500", "reptest", "1")
 	if err != nil {
 		fmt.Println("Error", err)
@@ -31,7 +32,7 @@ func CreateReplier() {
 		rqMsg := &ourStruct{}
 		_ = json.Unmarshal(rcvd, rqMsg)
 		response := &ourStruct{
-			Message: "HELLO " + rqMsg.Message,
+			Message: "HELLO " + rqMsg.Message + " from " + name,
 		}
 		bts, _ := json.Marshal(response)
 		*rsp[0] = bts
@@ -39,7 +40,7 @@ func CreateReplier() {
 		return nil
 	})
 	rep.AddHandler(hdl)
-	rep.Run(900, "inproc", "reptest")
+	rep.Run(port, "inproc", "reptest")
 }
 
 func CreateRequester() requester.Server {
@@ -77,7 +78,8 @@ func SendMessage(rqs requester.Server, name string) {
 }
 
 func main() {
-	go CreateReplier()
+	go CreateReplier(900, "Replier1")
+	go CreateReplier(901, "Replier2")
 	time.Sleep(time.Second * 5)
 	rqs := CreateRequester()
 	for i := 0; i < 10000; i++ {
