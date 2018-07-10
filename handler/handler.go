@@ -28,7 +28,7 @@ func (ds *defaultHandler) Add(name string, action HandleFunc) error {
 
 func (ds *defaultHandler) Run(name string, param interface{}, rsp ...*[]byte) error {
 	if action, ok := ds.actions[name]; ok {
-		hdlf := action(param, rsp[0])
+		hdlf := action(param, rsp...)
 		return hdlf
 	}
 
