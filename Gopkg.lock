@@ -2,18 +2,6 @@
 
 
 [[projects]]
-  branch = "development"
-  name = "bitbucket.org/ConsentSystems/mango-micro"
-  packages = [
-    "handler",
-    "mango-service/registry",
-    "mango-service/registry/consul",
-    "mango-service/service",
-    "messages"
-  ]
-  revision = "f86d09a02b2a3ca515faf14d73bf354481bd84f4"
-
-[[projects]]
   name = "github.com/hashicorp/consul"
   packages = ["api"]
   revision = "5174058f0d2bda63fa5198ab96c33d9a909c58ed"
@@ -68,6 +56,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "5007da6943d72379bf03eb435d99306205f2824c2e680969a1f7e0c7df357af9"
+  inputs-digest = "084bd865400ce6af235404f500dda0acac7a432adc21ee6c5c0ae966fe61bbf2"
   solver-name = "gps-cdcl"
   solver-version = 1
