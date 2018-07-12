@@ -60,21 +60,22 @@ func (reps *defaultServer) Run(port int, transport, addr string) {
 					}
 				}()
 
+				response := mangos.Message(*origMsg)
+				rsp := []*[]byte{&[]byte{}, &[]byte{}}
 				bts := rawMsg.Body
 				msg := &messages.Trigger{}
 				err = json.Unmarshal(bts, msg)
 				if err != nil {
+					*rsp[1] = []byte(err.Error())
 					fmt.Println("error unmsrshaling", err)
-					return
+				} else {
+					hdl.Run(msg.Name, msg.Params, rsp...)
 				}
-				rsp := &[]byte{}
-				hdl.Run(msg.Name, msg.Params, rsp)
-				msg.Params = *rsp
-				bts, err := json.Marshal(msg)
-				if err != nil {
-					return
-				}
-				response := mangos.Message(*origMsg)
+
+				body, _ := json.Marshal(rsp)
+				msg.Params = body
+				bts, _ = json.Marshal(msg)
+
 				response.Body = bts
 				reps.server.Sock().SendMsg(&response)
 			}(hdl, rawMsg)
