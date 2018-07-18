@@ -2,7 +2,6 @@ package subscriber
 
 import (
 	"encoding/json"
-	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -78,8 +77,6 @@ func (sub *defaultSubscriber) AddHandler(handler handler.Handler) {
 func NewSubscriber(regAddr string) Subscriber {
 	var subSock mangos.Socket
 	var err error
-
-	flag.Parse()
 
 	if subSock, err = sub.NewSocket(); err != nil {
 		log.Fatal("can't get new req socket: ", err.Error())
