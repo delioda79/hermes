@@ -20,12 +20,17 @@ type Server interface {
 	Sock() Requester
 	SockBare() mangos.Socket
 	Run(pbs ...Responder)
+	OpenSockets() int
+	TotRcv() int
 }
 type defaultServer struct {
 	client        service.Client
 	requesters    map[string]chan mangos.Message
 	supportSocket mangos.Socket
-	mutex         *sync.Mutex
+	srvMutex      *sync.Mutex
+	rcvChan       chan string
+	ttrcv         int
+	sckMutex      *sync.Mutex
 }
 
 // AddTransport adds a transport to the subscriber's socket
@@ -33,12 +38,23 @@ func (reqs *defaultServer) AddTransport(tr mangos.Transport) {
 	reqs.client.Sock().AddTransport(tr)
 }
 
+func (reqs *defaultServer) OpenSockets() int {
+	return len(reqs.requesters)
+}
+
+func (reqs *defaultServer) TotRcv() int {
+	reqs.srvMutex.Lock()
+	res := reqs.ttrcv
+	reqs.srvMutex.Unlock()
+	return res
+}
+
 func (reqs *defaultServer) Sock() Requester {
 	uid := uuid.NewUUID().String()
-	sock, ch := NewRequester(uid, reqs.client.Sock(), reqs.supportSocket)
-	reqs.mutex.Lock()
+	sock, ch := NewRequester(uid, reqs.client.Sock(), reqs.supportSocket, reqs.rcvChan, reqs.sckMutex)
+	reqs.srvMutex.Lock()
 	reqs.requesters[uid] = ch
-	reqs.mutex.Unlock()
+	reqs.srvMutex.Unlock()
 	return sock
 }
 
@@ -52,26 +68,39 @@ func (reqs *defaultServer) Run(pbs ...Responder) {
 		fmt.Println("Connecting")
 		reqs.client.Connect(p.Name, p.Version, p.Protocol)
 	}
+
+	go func(ch chan string) {
+		for {
+			uid := <-ch
+			reqs.srvMutex.Lock()
+			_, ok := reqs.requesters[uid]
+			if ok {
+				delete(reqs.requesters, uid)
+			}
+			reqs.srvMutex.Unlock()
+		}
+	}(reqs.rcvChan)
 	for {
 		fmt.Println("Receiver is waiting")
 		mgMsg, err := reqs.client.Sock().RecvMsg()
+		reqs.srvMutex.Lock()
+		reqs.ttrcv++
 		if err != nil {
 			fmt.Println("Error while retrieving msg", err)
 		}
 		trigger := &messages.Trigger{}
 		json.Unmarshal(mgMsg.Body, trigger)
-		reqs.mutex.Lock()
 		_, ok := reqs.requesters[trigger.UID]
 		if ok {
 			reqs.requesters[trigger.UID] <- *mgMsg
-			delete(reqs.requesters, trigger.UID)
 		}
-		reqs.mutex.Unlock()
+		reqs.srvMutex.Unlock()
 	}
 }
 
 // NewServer returns a new Subscriber
 func NewServer(regAddr string) (Server, error) {
+	rcvChan := make(chan string, 1)
 	pushSock, err := req.NewSocket()
 	if err != nil {
 		return nil, err
@@ -97,7 +126,10 @@ func NewServer(regAddr string) (Server, error) {
 		client:        client,
 		requesters:    map[string]chan mangos.Message{},
 		supportSocket: supportSock,
-		mutex:         &sync.Mutex{},
+		srvMutex:      &sync.Mutex{},
+		rcvChan:       rcvChan,
+		sckMutex:      &sync.Mutex{},
+		ttrcv:         0,
 	}, nil
 }
 
