@@ -62,7 +62,12 @@ func (mgc *MangoClient) connect(name string, version string, transport string) e
 			if action == mangos.PortActionRemove {
 				for i, v := range mgc.conns {
 					if port.Address() == v {
-						mgc.conns = append(mgc.conns[:i], mgc.conns[i+1:]...)
+						if len(mgc.conns) > i {
+							mgc.conns = append(mgc.conns[:i], mgc.conns[i+1:]...)
+						} else {
+							mgc.conns = mgc.conns[:i]
+						}
+
 						port.Dialer().Close()
 						fmt.Println("DROPPED ", port.Address())
 					}
