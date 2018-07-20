@@ -7,6 +7,7 @@ import (
 
 	"bitbucket.org/ddanna79/mango-micro/mango-service/registry"
 	"github.com/hashicorp/consul/api"
+	"github.com/micro/util/go/lib/addr"
 	"github.com/pborman/uuid"
 )
 
@@ -32,11 +33,17 @@ func (cr consulRegistry) Register(name, address string, port int, tags []string)
 	if err != nil {
 		return "", err
 	}
+
+	privateAddr, err := addr.Extract(address)
+	if err != nil {
+		return "", err
+	}
+
 	serviceCOnf := &api.AgentServiceRegistration{
 		ID:      uuid.NewUUID().String(),
 		Name:    name,
 		Port:    port,
-		Address: address,
+		Address: privateAddr,
 		Tags:    tags,
 	}
 	err = cl.Agent().ServiceRegister(serviceCOnf)
@@ -44,7 +51,7 @@ func (cr consulRegistry) Register(name, address string, port int, tags []string)
 		return "", err
 	}
 
-	fmt.Println("Registered service")
+	fmt.Println("Registered service: ", privateAddr)
 	return serviceCOnf.ID, nil
 }
 

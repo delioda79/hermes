@@ -3,6 +3,8 @@ package replier
 import (
 	"encoding/json"
 	"fmt"
+	"sync"
+	"time"
 
 	"bitbucket.org/ddanna79/mango-micro/handler"
 	"bitbucket.org/ddanna79/mango-micro/mango-service/registry/consul"
@@ -12,6 +14,8 @@ import (
 	mangos "nanomsg.org/go-mangos"
 	"nanomsg.org/go-mangos/protocol/rep"
 )
+
+//var mx sync.Mutex
 
 // Server is the server
 type Server interface {
@@ -24,6 +28,7 @@ type defaultServer struct {
 	name     string
 	version  string
 	handlers []handler.Handler
+	mx       sync.Mutex
 }
 
 // AddHandler adds a hand;er to the subscriber
@@ -46,7 +51,7 @@ func (reps *defaultServer) Run(port int, transport, addr string) {
 		reps.version,
 	)
 	for {
-		fmt.Println("WAITING FOR MSG")
+		//fmt.Println("WAITING FOR MSG")
 		rawMsg, err := reps.server.Sock().RecvMsg()
 		if err != nil {
 			fmt.Println(err)
@@ -54,13 +59,13 @@ func (reps *defaultServer) Run(port int, transport, addr string) {
 
 		for _, hdl := range reps.handlers {
 			go func(hdl handler.Handler, origMsg *mangos.Message) {
+				reps.mx.Lock()
 				defer func() {
 					if r := recover(); r != nil {
 						fmt.Println("Recovered from: ", r)
 					}
 				}()
 
-				response := mangos.Message(*origMsg)
 				rsp := []*[]byte{&[]byte{}, &[]byte{}}
 				bts := rawMsg.Body
 				msg := &messages.Trigger{}
@@ -71,13 +76,19 @@ func (reps *defaultServer) Run(port int, transport, addr string) {
 				} else {
 					hdl.Run(msg.Name, msg.Params, rsp...)
 				}
-
 				body, _ := json.Marshal(rsp)
 				msg.Params = body
 				bts, _ = json.Marshal(msg)
-
+				response := mangos.NewMessage(len(bts))
+				//response := mangos.Message(*origMsg)
 				response.Body = bts
-				reps.server.Sock().SendMsg(&response)
+				response.Header = (*origMsg).Header
+				time.Sleep(time.Microsecond * 5)
+				err := reps.server.Sock().SendMsg(response)
+				if err != nil {
+					fmt.Println("SOmething went wrong: ", err)
+				}
+				reps.mx.Unlock()
 			}(hdl, rawMsg)
 		}
 	}
