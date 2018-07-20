@@ -2,18 +2,6 @@
 
 
 [[projects]]
-  branch = "development"
-  name = "bitbucket.org/ddanna79/mango-micro"
-  packages = [
-    "handler",
-    "mango-service/registry",
-    "mango-service/registry/consul",
-    "mango-service/service",
-    "messages"
-  ]
-  revision = "f86d09a02b2a3ca515faf14d73bf354481bd84f4"
-
-[[projects]]
   name = "github.com/hashicorp/consul"
   packages = ["api"]
   revision = "5174058f0d2bda63fa5198ab96c33d9a909c58ed"
@@ -36,6 +24,12 @@
   packages = ["coordinate"]
   revision = "d6574a5bb1226678d7010325fb6c985db20ee458"
   version = "v0.8.1"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/micro/util"
+  packages = ["go/lib/addr"]
+  revision = "4b7ed83e8520ab8fe6e5ef61fa2ede94b32f8602"
 
 [[projects]]
   branch = "master"
@@ -68,6 +62,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "5007da6943d72379bf03eb435d99306205f2824c2e680969a1f7e0c7df357af9"
+  inputs-digest = "d424f1cf3f278d3c882baa38de58b7e62d46ca774ca4761b76419db610b3be1c"
   solver-name = "gps-cdcl"
   solver-version = 1
