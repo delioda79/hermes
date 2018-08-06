@@ -69,6 +69,7 @@ func (mgc *MangoClient) connect(name string, version string, transport string) e
 						}
 
 						port.Dialer().Close()
+						port.Close()
 						fmt.Println("DROPPED ", port.Address())
 					}
 				}
