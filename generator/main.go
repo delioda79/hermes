@@ -11,10 +11,10 @@ import (
 	"reflect"
 	"strings"
 
-	"bitbucket.org/ddanna79/mango-micro/generator/puller"
-	"bitbucket.org/ddanna79/mango-micro/generator/pusher"
-	"bitbucket.org/ddanna79/mango-micro/generator/replier"
-	"bitbucket.org/ddanna79/mango-micro/generator/requester"
+	"bitbucket.org/ConsentSystems/mango-micro/generator/puller"
+	"bitbucket.org/ConsentSystems/mango-micro/generator/pusher"
+	"bitbucket.org/ConsentSystems/mango-micro/generator/replier"
+	"bitbucket.org/ConsentSystems/mango-micro/generator/requester"
 )
 
 // CodeGenerator generates the code for the server and client

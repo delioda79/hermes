@@ -53,8 +53,8 @@ import (
 	"fmt"
 	"strconv"
 
-	"bitbucket.org/ddanna79/mango-micro/handler"
-	"bitbucket.org/ddanna79/mango-micro/puller"
+	"bitbucket.org/ConsentSystems/mango-micro/handler"
+	"bitbucket.org/ConsentSystems/mango-micro/puller"
 	"nanomsg.org/go-mangos/transport/inproc"
 	"nanomsg.org/go-mangos/transport/tcp"
 )

@@ -1,22 +1,21 @@
 package example1
 
-	import (
+import (
 	"encoding/json"
 
-	"bitbucket.org/ddanna79/mango-micro/pusher"
+	"bitbucket.org/ConsentSystems/mango-micro/pusher"
 	"nanomsg.org/go-mangos/transport/inproc"
 	"nanomsg.org/go-mangos/transport/tcp"
 )
-	
+
 type APICallsHandlerClient interface {
 	RegisterCall(msg APICallMessage) error
 	NoParamsCall() error
 }
 
-type defaultAPICallsHandlerClient struct{
+type defaultAPICallsHandlerClient struct {
 	psh pusher.Pusher
 }
-
 
 func (cl *defaultAPICallsHandlerClient) RegisterCall(msg APICallMessage) error {
 	bts, err := json.Marshal(msg)
@@ -25,7 +24,6 @@ func (cl *defaultAPICallsHandlerClient) RegisterCall(msg APICallMessage) error {
 	}
 	return cl.psh.Push("APICallsHandler.RegisterCall", bts)
 }
-
 
 func (cl *defaultAPICallsHandlerClient) NoParamsCall() error {
 	bts := []byte{}

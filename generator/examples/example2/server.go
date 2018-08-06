@@ -3,23 +3,22 @@ package example2
 import (
 	"encoding/json"
 
-	"bitbucket.org/ddanna79/mango-micro/handler"
-	"bitbucket.org/ddanna79/mango-micro/replier"
+	"bitbucket.org/ConsentSystems/mango-micro/handler"
+	"bitbucket.org/ConsentSystems/mango-micro/replier"
 	"nanomsg.org/go-mangos/transport/inproc"
 	"nanomsg.org/go-mangos/transport/tcp"
 )
-import "gopkg.in/mgo.v2/bson"
 
 // NewAPICallsHandlerServer returns a new replier server
-func NewAPICallsHandlerServer (
+func NewAPICallsHandlerServer(
 	regAddr string,
 	serverPort int,
-	hdl  APICallsHandler,
+	hdl APICallsHandler,
 ) {
 
 	replier, _ := replier.NewServer(regAddr, "APICallsHandlerServer-replier", "1")
 	handler := handler.NewHandler()
-	
+
 	handler.Add("APICallsHandler.RegisterCall", func(in interface{}, out ...*[]byte) error {
 		*out[0] = []byte{}
 		*out[1] = []byte{}
@@ -52,4 +51,3 @@ func NewAPICallsHandlerServer (
 	go replier.Run(serverPort, "inproc", "APICallsHandlerServer-replier")
 	go replier.Run(serverPort, "tcp", "")
 }
-

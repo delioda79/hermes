@@ -38,8 +38,8 @@ func makeHeader(pkg string) string {
 import (
 	"encoding/json"
 
-	"bitbucket.org/ddanna79/mango-micro/handler"
-	"bitbucket.org/ddanna79/mango-micro/replier"
+	"bitbucket.org/ConsentSystems/mango-micro/handler"
+	"bitbucket.org/ConsentSystems/mango-micro/replier"
 	"nanomsg.org/go-mangos/transport/inproc"
 	"nanomsg.org/go-mangos/transport/tcp"
 )

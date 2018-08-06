@@ -5,18 +5,17 @@ import (
 	"fmt"
 	"strconv"
 
-	"bitbucket.org/ddanna79/mango-micro/handler"
-	"bitbucket.org/ddanna79/mango-micro/puller"
+	"bitbucket.org/ConsentSystems/mango-micro/handler"
+	"bitbucket.org/ConsentSystems/mango-micro/puller"
 	"nanomsg.org/go-mangos/transport/inproc"
 	"nanomsg.org/go-mangos/transport/tcp"
 )
-import "gopkg.in/mgo.v2/bson"
 
 // NewAPICallsHandlerServer returns a new puller server
-func NewAPICallsHandlerServer (
+func NewAPICallsHandlerServer(
 	discoveryAddr string,
 	portStr string,
-	hdl  APICallsHandler,
+	hdl APICallsHandler,
 ) (puller.Server, error) {
 	pullserver, _ := puller.NewServer(
 		discoveryAddr,
@@ -35,7 +34,6 @@ func NewAPICallsHandlerServer (
 
 	handler := handler.NewHandler()
 
-	
 	handler.Add("APICallsHandler.RegisterCall ", func(msg interface{}, rsp ...*[]byte) error {
 		inParam := &APICallMessage{}
 		arg, ok := msg.([]byte)
@@ -55,15 +53,12 @@ func NewAPICallsHandlerServer (
 		return nil
 	})
 
-
 	handler.Add("APICallsHandler.NoParamsCall ", func(msg interface{}, rsp ...*[]byte) error {
 		hdl.NoParamsCall()
 		return nil
 	})
 
-
 	pullserver.AddHandler(handler)
 
 	return pullserver, nil
 }
-

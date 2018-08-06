@@ -4,23 +4,22 @@ import (
 	"encoding/json"
 	"errors"
 
-	"bitbucket.org/ddanna79/mango-micro/requester"
+	"bitbucket.org/ConsentSystems/mango-micro/requester"
 	"nanomsg.org/go-mangos/transport/inproc"
 	"nanomsg.org/go-mangos/transport/tcp"
 )
-	
+
 // APICallsHandlerClient ...
 type APICallsHandlerClient interface {
-	RegisterCall(msg APICallMessage) (*APICallMessage,error)
+	RegisterCall(msg APICallMessage) (*APICallMessage, error)
 }
 
-type defaultAPICallsHandlerClient struct{
+type defaultAPICallsHandlerClient struct {
 	rqstr requester.Server
 }
 
-
 // RegisterCall ...
-func (cl *defaultAPICallsHandlerClient) RegisterCall(msg APICallMessage) (*APICallMessage,error) {
+func (cl *defaultAPICallsHandlerClient) RegisterCall(msg APICallMessage) (*APICallMessage, error) {
 
 	bts, err := json.Marshal(msg)
 	if err != nil {
