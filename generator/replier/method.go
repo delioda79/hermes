@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"go/ast"
 	"log"
-	"os"
 	"reflect"
 	"strings"
+
+	"bitbucket.org/ConsentSystems/mango-micro/generator/utils"
 )
 
 func makeMethod(nameSp string, mtd *ast.Field) string {
@@ -37,19 +38,19 @@ func makeMethod(nameSp string, mtd *ast.Field) string {
 	if len(params) == 1 {
 		switch pr := params[0].Type.(type) {
 		case *ast.StarExpr:
-			name := ""
-			switch damn := pr.X.(type) {
-			case *ast.Ident:
-				name = pr.X.(*ast.Ident).Name
-			case *ast.SelectorExpr:
-				slr := pr.X.(*ast.SelectorExpr)
-				fmt.Printf("Selector: %+v\n", slr)
-				name = slr.X.(*ast.Ident).Name + "." + slr.Sel.Name
-			default:
-				fmt.Println("Type is: ", reflect.TypeOf(damn))
-				os.Exit(1)
-			}
-
+			// name := ""
+			// switch damn := pr.X.(type) {
+			// case *ast.Ident:
+			// 	name = pr.X.(*ast.Ident).Name
+			// case *ast.SelectorExpr:
+			// 	slr := pr.X.(*ast.SelectorExpr)
+			// 	fmt.Printf("Selector: %+v\n", slr)
+			// 	name = slr.X.(*ast.Ident).Name + "." + slr.Sel.Name
+			// default:
+			// 	fmt.Println("Type is: ", reflect.TypeOf(damn))
+			// 	os.Exit(1)
+			// }
+			name := utils.GetNameFromTopLevelNode(params[0].Type)
 			mtdStr = `
 	handler.Add("` + nameSp + `.` + mtdName + `", func(in interface{}, out ...*[]byte) error {
 		*out[0] = []byte{}

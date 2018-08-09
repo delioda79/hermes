@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"go/ast"
 	"log"
-	"reflect"
 	"strings"
+
+	"bitbucket.org/ConsentSystems/mango-micro/generator/utils"
 )
 
 func makeMethod(nameSp string, mtd *ast.Field) string {
@@ -18,10 +19,8 @@ func makeMethod(nameSp string, mtd *ast.Field) string {
 
 	mtdName := mtd.Names[0].Name
 	if len(params) == 1 {
-		switch pr := params[0].Type.(type) {
-		case *ast.StarExpr:
-			name := pr.X.(*ast.Ident).Name
-			mtdStr = `
+		name := utils.GetNameFromTopLevelNode(params[0].Type)
+		mtdStr = `
 func (cl *default` + nameSp + `Client) ` + mtdName + `(msg ` + name + `) error {
 	bts, err := json.Marshal(msg)
 	if err != nil {
@@ -30,11 +29,6 @@ func (cl *default` + nameSp + `Client) ` + mtdName + `(msg ` + name + `) error {
 	return cl.psh.Push("` + nameSp + `.` + mtdName + `", bts)
 }
 `
-
-		default:
-			fmt.Printf("Parameter: %+v\n", reflect.TypeOf(pr))
-
-		}
 	} else {
 		mtdStr = `
 func (cl *default` + nameSp + `Client) ` + mtdName + `() error {
@@ -78,14 +72,8 @@ func makeInterface(nameSp string, lst *ast.FieldList) string {
 
 		mtdName := mtd.Names[0].Name
 		if len(params) == 1 {
-			switch pr := params[0].Type.(type) {
-			case *ast.StarExpr:
-				name := pr.X.(*ast.Ident).Name
-				mtdStr = mtdName + `(msg ` + name + `) error`
-			default:
-				fmt.Printf("Parameter: %+v\n", reflect.TypeOf(pr))
-
-			}
+			name := utils.GetNameFromTopLevelNode(params[0].Type)
+			mtdStr = mtdName + `(msg ` + name + `) error`
 		} else {
 			mtdStr = mtdName + `() error`
 		}

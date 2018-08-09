@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"go/ast"
 	"log"
-	"reflect"
 	"strings"
+
+	"bitbucket.org/ConsentSystems/mango-micro/generator/utils"
 )
 
 func makeMethod(nameSp string, mtd *ast.Field) string {
@@ -18,10 +19,8 @@ func makeMethod(nameSp string, mtd *ast.Field) string {
 
 	mtdName := mtd.Names[0].Name
 	if len(params) == 1 {
-		switch pr := params[0].Type.(type) {
-		case *ast.StarExpr:
-			name := pr.X.(*ast.Ident).Name
-			mtdStr = `
+		name := utils.GetNameFromTopLevelNode(params[0].Type)
+		mtdStr = `
 	handler.Add("` + nameSp + `.` + mtdName + ` ", func(msg interface{}, rsp ...*[]byte) error {
 		inParam := &` + name + `{}
 		arg, ok := msg.([]byte)
@@ -41,11 +40,6 @@ func makeMethod(nameSp string, mtd *ast.Field) string {
 		return nil
 	})
 `
-
-		default:
-			fmt.Printf("Parameter: %+v\n", reflect.TypeOf(pr))
-
-		}
 	} else {
 		mtdStr = `
 	handler.Add("` + nameSp + `.` + mtdName + ` ", func(msg interface{}, rsp ...*[]byte) error {
