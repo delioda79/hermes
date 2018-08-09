@@ -8,6 +8,7 @@ import (
 	"nanomsg.org/go-mangos/transport/inproc"
 	"nanomsg.org/go-mangos/transport/tcp"
 )
+import "bitbucket.org/ConsentSystems/mango-micro/messages"
 
 // NewAPICallsHandlerServer returns a new replier server
 func NewAPICallsHandlerServer(
@@ -30,6 +31,32 @@ func NewAPICallsHandlerServer(
 		}
 
 		rsp, err := hdl.RegisterCall(req)
+		if err != nil {
+			*out[1] = []byte(err.Error())
+			return err
+		}
+
+		bts, err := json.Marshal(rsp)
+		if err != nil {
+			*out[1] = []byte(err.Error())
+			return err
+		}
+
+		*out[0] = bts
+		return nil
+	})
+
+	handler.Add("APICallsHandler.External", func(in interface{}, out ...*[]byte) error {
+		*out[0] = []byte{}
+		*out[1] = []byte{}
+		req := &messages.Trigger{}
+		err := json.Unmarshal(in.([]byte), req)
+		if err != nil {
+			*out[1] = []byte(err.Error())
+			return err
+		}
+
+		rsp, err := hdl.External(req)
 		if err != nil {
 			*out[1] = []byte(err.Error())
 			return err

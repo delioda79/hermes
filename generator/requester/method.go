@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"go/ast"
 	"log"
+	"os"
 	"reflect"
 	"strings"
 )
@@ -21,13 +22,36 @@ func makeMethod(nameSp string, mtd *ast.Field) string {
 		log.Fatal("Methods need to return exactly 2 params")
 	}
 
-	resultType := results[0].Type.(*ast.StarExpr).X.(*ast.Ident).Name
+	resultType := ""
+	switch damn := results[0].Type.(*ast.StarExpr).X.(type) {
+	case *ast.Ident:
+		resultType = results[0].Type.(*ast.StarExpr).X.(*ast.Ident).Name
+	case *ast.SelectorExpr:
+		slr := results[0].Type.(*ast.StarExpr).X.(*ast.SelectorExpr)
+		fmt.Printf("Selector: %+v\n", slr)
+		resultType = slr.X.(*ast.Ident).Name + "." + slr.Sel.Name
+	default:
+		fmt.Println("Type is: ", reflect.TypeOf(damn))
+		os.Exit(1)
+	}
 
 	mtdName := mtd.Names[0].Name
 	if len(params) == 1 {
 		switch pr := params[0].Type.(type) {
+
 		case *ast.StarExpr:
-			name := pr.X.(*ast.Ident).Name
+			name := ""
+			switch damn := pr.X.(type) {
+			case *ast.Ident:
+				name = pr.X.(*ast.Ident).Name
+			case *ast.SelectorExpr:
+				slr := pr.X.(*ast.SelectorExpr)
+				fmt.Printf("Selector: %+v\n", slr)
+				name = slr.X.(*ast.Ident).Name + "." + slr.Sel.Name
+			default:
+				fmt.Println("Type is: ", reflect.TypeOf(damn))
+				os.Exit(1)
+			}
 			mtdStr = `
 // ` + mtdName + ` ...
 func (cl *default` + nameSp + `Client) ` + mtdName + `(msg ` + name + `) (*` + resultType + `,error) {
@@ -108,13 +132,35 @@ func makeInterface(nameSp string, lst *ast.FieldList) string {
 			log.Fatal("Methods need to return exactly 2 params")
 		}
 
-		resultType := results[0].Type.(*ast.StarExpr).X.(*ast.Ident).Name
+		resultType := ""
+		switch damn := results[0].Type.(*ast.StarExpr).X.(type) {
+		case *ast.Ident:
+			resultType = results[0].Type.(*ast.StarExpr).X.(*ast.Ident).Name
+		case *ast.SelectorExpr:
+			slr := results[0].Type.(*ast.StarExpr).X.(*ast.SelectorExpr)
+			fmt.Printf("Selector: %+v\n", slr)
+			resultType = slr.X.(*ast.Ident).Name + "." + slr.Sel.Name
+		default:
+			fmt.Println("Type is: ", reflect.TypeOf(damn))
+			os.Exit(1)
+		}
 
 		mtdName := mtd.Names[0].Name
 		if len(params) == 1 {
 			switch pr := params[0].Type.(type) {
 			case *ast.StarExpr:
-				name := pr.X.(*ast.Ident).Name
+				name := ""
+				switch damn := pr.X.(type) {
+				case *ast.Ident:
+					name = pr.X.(*ast.Ident).Name
+				case *ast.SelectorExpr:
+					slr := pr.X.(*ast.SelectorExpr)
+					fmt.Printf("Selector: %+v\n", slr)
+					name = slr.X.(*ast.Ident).Name + "." + slr.Sel.Name
+				default:
+					fmt.Println("Type is: ", reflect.TypeOf(damn))
+					os.Exit(1)
+				}
 				mtdStr = mtdName + `(msg ` + name + `) (*` + resultType + `,error)`
 			default:
 				fmt.Printf("Parameter: %+v\n", reflect.TypeOf(pr))

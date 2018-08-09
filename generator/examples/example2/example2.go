@@ -1,6 +1,9 @@
 package example2
 
-import "gopkg.in/mgo.v2/bson"
+import (
+	"bitbucket.org/ConsentSystems/mango-micro/messages"
+	"gopkg.in/mgo.v2/bson"
+)
 
 // APICallMessage represents a call to the API log message
 type APICallMessage struct {
@@ -13,4 +16,5 @@ type APICallMessage struct {
 // APICallsHandler handles teh API calls cunt
 type APICallsHandler interface {
 	RegisterCall(*APICallMessage) (*APICallMessage, error)
+	External(*messages.Trigger) (*messages.Trigger, error)
 }

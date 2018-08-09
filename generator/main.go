@@ -44,14 +44,6 @@ func main() {
 		fmt.Println("Parsing error: ", err)
 		return
 	}
-	// for _, s := range f.Decls {
-	// 	//fmt.Printf("%+v\n", s)
-	// 	s2 := s.(*ast.GenDecl)
-	// 	if s2.Specs != nil {
-	// 		fmt.Printf("%+v\n", s2.Specs[0])
-	// 	}
-
-	// }
 
 	var srvGen, clGen CodeGenerator
 
@@ -92,6 +84,7 @@ func main() {
 			}
 		case *ast.ImportSpec:
 			target = strings.Join([]string{target, `import `, t.Path.Value, "\n"}, "")
+			targetClient = strings.Join([]string{targetClient, `import `, t.Path.Value, "\n"}, "")
 		default:
 			if reflect.TypeOf(t) != nil {
 				//fmt.Println(reflect.TypeOf(t))
