@@ -90,8 +90,13 @@ func (cl *default` + nameSp + `Client) ` + mtdName + `() (*` + resultType + `,er
 	if err != nil {
 		return nil, err
 	}
+	resArr := &[]*[]byte{}
+	json.Unmarshal(resBts, resArr)
 	rsp := &` + resultType + `{}
-	json.Unmarshal(resBts, rsp)
+	json.Unmarshal(*(*resArr)[0], rsp)
+	if len(*(*resArr)[1]) > 0 {
+		return nil, errors.New(string(*(*resArr)[1]))
+	}
 	return rsp, nil
 }
 `
