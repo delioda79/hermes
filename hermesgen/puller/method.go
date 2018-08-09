@@ -6,7 +6,7 @@ import (
 	"log"
 	"strings"
 
-	"bitbucket.org/ConsentSystems/mango-micro/generator/utils"
+	"bitbucket.org/ConsentSystems/mango-micro/hermesgen/utils"
 )
 
 func makeMethod(nameSp string, mtd *ast.Field) string {

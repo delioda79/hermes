@@ -11,10 +11,10 @@ import (
 	"reflect"
 	"strings"
 
-	"bitbucket.org/ConsentSystems/mango-micro/generator/puller"
-	"bitbucket.org/ConsentSystems/mango-micro/generator/pusher"
-	"bitbucket.org/ConsentSystems/mango-micro/generator/replier"
-	"bitbucket.org/ConsentSystems/mango-micro/generator/requester"
+	"bitbucket.org/ConsentSystems/mango-micro/hermesgen/puller"
+	"bitbucket.org/ConsentSystems/mango-micro/hermesgen/pusher"
+	"bitbucket.org/ConsentSystems/mango-micro/hermesgen/replier"
+	"bitbucket.org/ConsentSystems/mango-micro/hermesgen/requester"
 )
 
 // CodeGenerator generates the code for the server and client
