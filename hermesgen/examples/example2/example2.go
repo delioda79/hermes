@@ -17,4 +17,5 @@ type APICallMessage struct {
 type APICallsHandler interface {
 	RegisterCall(*APICallMessage) (*APICallMessage, error)
 	External(*messages.Trigger) (*messages.Trigger, error)
+	NoParams() (*messages.Trigger, error)
 }

@@ -31,10 +31,10 @@ func New` + cltName + `(
 
 	return &default` + t.Name.Name + `Client{
 		rqstr: cl,
+		deadline: time.Second * 10,
 	}, nil
 }
 `
-
 	return intf + mtds + server
 }
 
@@ -45,6 +45,7 @@ func makeHeader(pkg string) string {
 import (
 	"encoding/json"
 	"errors"
+	"time"
 
 	"bitbucket.org/ConsentSystems/mango-micro/requester"
 	"nanomsg.org/go-mangos/transport/inproc"

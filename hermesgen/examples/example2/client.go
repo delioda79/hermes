@@ -3,6 +3,7 @@ package example2
 import (
 	"encoding/json"
 	"errors"
+	"time"
 
 	"bitbucket.org/ConsentSystems/mango-micro/requester"
 	"nanomsg.org/go-mangos/transport/inproc"
@@ -14,10 +15,17 @@ import "bitbucket.org/ConsentSystems/mango-micro/messages"
 type APICallsHandlerClient interface {
 	RegisterCall(msg APICallMessage) (*APICallMessage, error)
 	External(msg messages.Trigger) (*messages.Trigger, error)
+	NoParams() (*messages.Trigger, error)
 }
 
 type defaultAPICallsHandlerClient struct {
-	rqstr requester.Server
+	rqstr    requester.Server
+	deadline time.Duration
+}
+
+// SetDeadline Sets the deadline for the requests
+func (cl *defaultAPICallsHandlerClient) SetDeadline(dr time.Duration) {
+	cl.deadline = dr
 }
 
 // RegisterCall ...
@@ -27,8 +35,9 @@ func (cl *defaultAPICallsHandlerClient) RegisterCall(msg APICallMessage) (*APICa
 	if err != nil {
 		return nil, err
 	}
-
-	resBts, err := cl.rqstr.Sock().Request("APICallsHandler.RegisterCall", bts)
+	sck := cl.rqstr.Sock()
+	sck.SetDeadline(cl.deadline)
+	resBts, err := sck.Request("APICallsHandler.RegisterCall", bts)
 	if err != nil {
 		return nil, err
 	}
@@ -49,8 +58,27 @@ func (cl *defaultAPICallsHandlerClient) External(msg messages.Trigger) (*message
 	if err != nil {
 		return nil, err
 	}
+	sck := cl.rqstr.Sock()
+	sck.SetDeadline(cl.deadline)
+	resBts, err := sck.Request("APICallsHandler.External", bts)
+	if err != nil {
+		return nil, err
+	}
+	resArr := &[]*[]byte{}
+	json.Unmarshal(resBts, resArr)
+	rsp := &messages.Trigger{}
+	json.Unmarshal(*(*resArr)[0], rsp)
+	if len(*(*resArr)[1]) > 0 {
+		return nil, errors.New(string(*(*resArr)[1]))
+	}
+	return rsp, nil
+}
 
-	resBts, err := cl.rqstr.Sock().Request("APICallsHandler.External", bts)
+// NoParams ...
+func (cl *defaultAPICallsHandlerClient) NoParams() (*messages.Trigger, error) {
+	sck := cl.rqstr.Sock()
+	sck.SetDeadline(cl.deadline)
+	resBts, err := sck.Request("APICallsHandler.NoParams", []byte{})
 	if err != nil {
 		return nil, err
 	}
@@ -81,6 +109,7 @@ func NewAPICallsHandlerClient(
 	go cl.Run(responder...)
 
 	return &defaultAPICallsHandlerClient{
-		rqstr: cl,
+		rqstr:    cl,
+		deadline: time.Second * 10,
 	}, nil
 }

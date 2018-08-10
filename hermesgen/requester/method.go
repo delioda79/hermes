@@ -62,8 +62,9 @@ func (cl *default` + nameSp + `Client) ` + mtdName + `(msg ` + name + `) (*` + r
 	if err != nil {
 		return nil, err
 	}
-
-	resBts, err := cl.rqstr.Sock().Request("` + nameSp + `.` + mtdName + `", bts)
+	sck := cl.rqstr.Sock()
+	sck.SetDeadline(cl.deadline)
+	resBts, err := sck.Request("` + nameSp + `.` + mtdName + `", bts)
 	if err != nil {
 		return nil, err
 	}
@@ -86,7 +87,9 @@ func (cl *default` + nameSp + `Client) ` + mtdName + `(msg ` + name + `) (*` + r
 		mtdStr = `
 // ` + mtdName + ` ...
 func (cl *default` + nameSp + `Client) ` + mtdName + `() (*` + resultType + `,error) {
-	resBts, err := cl.rqstr.Sock().Request("` + nameSp + `.` + mtdName + `", []byte{})
+	sck := cl.rqstr.Sock()
+	sck.SetDeadline(cl.deadline)
+	resBts, err := sck.Request("` + nameSp + `.` + mtdName + `", []byte{})
 	if err != nil {
 		return nil, err
 	}
@@ -117,8 +120,13 @@ func makeMethods(nameSp string, lst *ast.FieldList) string {
 	defaultCl := `
 type default` + nameSp + `Client struct{
 	rqstr requester.Server
+	deadline time.Duration
 }
 
+// SetDeadline Sets the deadline for the requests
+func (cl *default` + nameSp + `Client) SetDeadline(dr time.Duration) {
+	cl.deadline = dr
+}
 `
 	return defaultCl + methodsStr
 }
@@ -140,39 +148,9 @@ func makeInterface(nameSp string, lst *ast.FieldList) string {
 		}
 
 		resultType := utils.GetNameFromTopLevelNode(results[0].Type)
-		// switch damn := results[0].Type.(*ast.StarExpr).X.(type) {
-		// case *ast.Ident:
-		// 	resultType = results[0].Type.(*ast.StarExpr).X.(*ast.Ident).Name
-		// case *ast.SelectorExpr:
-		// 	slr := results[0].Type.(*ast.StarExpr).X.(*ast.SelectorExpr)
-		// 	fmt.Printf("Selector: %+v\n", slr)
-		// 	resultType = slr.X.(*ast.Ident).Name + "." + slr.Sel.Name
-		// default:
-		// 	fmt.Println("Type is: ", reflect.TypeOf(damn))
-		// 	os.Exit(1)
-		// }
 
 		mtdName := mtd.Names[0].Name
 		if len(params) == 1 {
-			// switch pr := params[0].Type.(type) {
-			// case *ast.StarExpr:
-			// 	name := ""
-			// 	switch damn := pr.X.(type) {
-			// 	case *ast.Ident:
-			// 		name = pr.X.(*ast.Ident).Name
-			// 	case *ast.SelectorExpr:
-			// 		slr := pr.X.(*ast.SelectorExpr)
-			// 		fmt.Printf("Selector: %+v\n", slr)
-			// 		name = slr.X.(*ast.Ident).Name + "." + slr.Sel.Name
-			// 	default:
-			// 		fmt.Println("Type is: ", reflect.TypeOf(damn))
-			// 		os.Exit(1)
-			// 	}
-			// 	mtdStr = mtdName + `(msg ` + name + `) (*` + resultType + `,error)`
-			// default:
-			// 	fmt.Printf("Parameter: %+v\n", reflect.TypeOf(pr))
-
-			// }
 			name := utils.GetNameFromTopLevelNode(params[0].Type)
 			mtdStr = mtdName + `(msg ` + name + `) (*` + resultType + `,error)`
 		} else {
