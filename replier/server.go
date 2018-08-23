@@ -63,6 +63,7 @@ func (reps *defaultServer) Run(port int, transport, addr string) {
 				defer func() {
 					if r := recover(); r != nil {
 						fmt.Println("Recovered from: ", r)
+						reps.mx.Unlock()
 					}
 				}()
 
