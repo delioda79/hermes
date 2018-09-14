@@ -44,6 +44,15 @@
   version = "v1.1"
 
 [[projects]]
+  branch = "v2"
+  name = "gopkg.in/mgo.v2"
+  packages = [
+    "bson",
+    "internal/json"
+  ]
+  revision = "9856a29383ce1c59f308dd1cf0363a79b5bef6b5"
+
+[[projects]]
   name = "nanomsg.org/go-mangos"
   packages = [
     ".",
@@ -62,10 +71,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-<<<<<<< HEAD
-  inputs-digest = "084bd865400ce6af235404f500dda0acac7a432adc21ee6c5c0ae966fe61bbf2"
-=======
-  inputs-digest = "d424f1cf3f278d3c882baa38de58b7e62d46ca774ca4761b76419db610b3be1c"
->>>>>>> 0a49545a6ab43db7e3b369d71e667eaf48b9c66b
+  inputs-digest = "2482ed3e99fd5c3fec395f7395e7237574fc2b8ff88395e5e417c480e60bd450"
   solver-name = "gps-cdcl"
   solver-version = 1

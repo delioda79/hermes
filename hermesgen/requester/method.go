@@ -30,7 +30,7 @@ func makeMethod(nameSp string, mtd *ast.Field) string {
 		resultType = results[0].Type.(*ast.StarExpr).X.(*ast.Ident).Name
 	case *ast.SelectorExpr:
 		slr := results[0].Type.(*ast.StarExpr).X.(*ast.SelectorExpr)
-		fmt.Printf("Selector: %+v\n", slr)
+		//fmt.Printf("Selector: %+v\n", slr)
 		resultType = slr.X.(*ast.Ident).Name + "." + slr.Sel.Name
 	default:
 		fmt.Println("Type is: ", reflect.TypeOf(damn))
@@ -111,7 +111,7 @@ func (cl *default` + nameSp + `Client) ` + mtdName + `() (*` + resultType + `,er
 func makeMethods(nameSp string, lst *ast.FieldList) string {
 	methods := []string{}
 	for _, mtd := range lst.List {
-		fmt.Printf("Int: %+v\n\n\n\n\n", mtd)
+		//fmt.Printf("Int: %+v\n\n\n\n\n", mtd)
 		mtdStr := makeMethod(nameSp, mtd)
 		methods = append(methods, mtdStr)
 	}

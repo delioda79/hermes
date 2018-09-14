@@ -1,7 +1,6 @@
 package pusher
 
 import (
-	"fmt"
 	"go/ast"
 	"log"
 	"strings"
@@ -44,7 +43,7 @@ func (cl *default` + nameSp + `Client) ` + mtdName + `() error {
 func makeMethods(nameSp string, lst *ast.FieldList) string {
 	methods := []string{}
 	for _, mtd := range lst.List {
-		fmt.Printf("Int: %+v\n\n\n\n\n", mtd)
+		//fmt.Printf("Int: %+v\n\n\n\n\n", mtd)
 		mtdStr := makeMethod(nameSp, mtd)
 		methods = append(methods, mtdStr)
 	}
