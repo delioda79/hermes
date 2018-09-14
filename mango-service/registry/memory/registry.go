@@ -20,7 +20,7 @@ type Service struct {
 	Nodes []*Node
 }
 type Registry struct {
-	services []Service
+	services []*Service
 }
 
 func (rg *Registry) Register(name, address string, port int, tags []string) (string, error) {
@@ -38,7 +38,7 @@ func (rg *Registry) Register(name, address string, port int, tags []string) (str
 			},
 			Nodes: []*Node{},
 		}
-		rg.services = append(rg.services, *nd)
+		rg.services = append(rg.services, nd)
 	}
 
 	node := &Node{
@@ -109,7 +109,7 @@ func (rg *Registry) Get(name string, version, transport string) ([]string, error
 func (rg *Registry) findService(name string) *Service {
 	for _, v := range rg.services {
 		if v.Name == name {
-			return &v
+			return v
 		}
 	}
 
