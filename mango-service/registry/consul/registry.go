@@ -80,7 +80,7 @@ func (cr consulRegistry) Get(name string, version string, transport string) ([]s
 	if err != nil {
 		return []string{}, err
 	}
-	nodes := []*Node{}
+	nodes := []*registry.Node{}
 	for _, s := range rsp {
 
 		if s.Service.Service != name {
@@ -123,7 +123,7 @@ func (cr consulRegistry) Get(name string, version string, transport string) ([]s
 			continue
 		}
 
-		nodes = append(nodes, &Node{
+		nodes = append(nodes, &registry.Node{
 			ID:      id,
 			Address: address,
 			Port:    s.Service.Port,

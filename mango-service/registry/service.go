@@ -1,12 +1,20 @@
-package consul
+package registry
 
 import "fmt"
 
 // Service represents a service in Consul
 type Service struct {
-	Name    string
-	Version int
-	Nodes   []*Node
+	Name  string
+	Nodes []*Node
+}
+
+func (sv *Service) FindNode(id string) (*Node, int) {
+	for k, v := range sv.Nodes {
+		if v.ID == id {
+			return v, k
+		}
+	}
+	return nil, -1
 }
 
 // Node represents a node for a service
