@@ -10,8 +10,10 @@ import (
 	"time"
 
 	"bitbucket.org/ConsentSystems/mango-micro/handler"
+	"bitbucket.org/ConsentSystems/mango-micro/mango-service/registry/consul"
 	"bitbucket.org/ConsentSystems/mango-micro/replier"
 	"bitbucket.org/ConsentSystems/mango-micro/requester"
+	"github.com/hashicorp/consul/api"
 	"nanomsg.org/go-mangos/transport/inproc"
 )
 
@@ -23,7 +25,11 @@ type ourStruct struct {
 
 func CreateReplier(port int, name string, ch chan bool) {
 	fmt.Println("Creating ", port)
-	rep, err := replier.NewServer(":8500", "reptest", "1")
+	cnsl := consul.NewRegistry(&api.Config{
+		Address: ":8500",
+		Scheme:  "http",
+	})
+	rep, err := replier.NewServer(cnsl, "reptest", "1")
 	if err != nil {
 		fmt.Println("Error", err)
 		os.Exit(1)
@@ -56,7 +62,11 @@ func CreateReplier(port int, name string, ch chan bool) {
 }
 
 func CreateRequester() requester.Server {
-	rqs, _ := requester.NewServer(":8500")
+	cnsl := consul.NewRegistry(&api.Config{
+		Address: ":8500",
+		Scheme:  "http",
+	})
+	rqs, _ := requester.NewServer(cnsl)
 
 	rqs.AddTransport(inproc.NewTransport())
 	go rqs.Run(requester.Responder{

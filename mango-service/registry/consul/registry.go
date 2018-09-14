@@ -12,6 +12,12 @@ import (
 )
 
 // NewRegistry returns a new registry instance
+/**
+consul.NewRegistry(&api.Config{
+		Address: regAddr,
+		Scheme:  "http",
+	}
+**/
 func NewRegistry(config *api.Config) registry.Registry {
 	reg := &consulRegistry{}
 	var conf *api.Config

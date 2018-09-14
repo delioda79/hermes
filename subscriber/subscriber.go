@@ -7,10 +7,9 @@ import (
 	"os"
 
 	"bitbucket.org/ConsentSystems/mango-micro/handler"
-	"bitbucket.org/ConsentSystems/mango-micro/mango-service/registry/consul"
+	"bitbucket.org/ConsentSystems/mango-micro/mango-service/registry"
 	"bitbucket.org/ConsentSystems/mango-micro/mango-service/service"
 	"bitbucket.org/ConsentSystems/mango-micro/messages"
-	"github.com/hashicorp/consul/api"
 	mangos "nanomsg.org/go-mangos"
 	"nanomsg.org/go-mangos/protocol/sub"
 )
@@ -74,18 +73,13 @@ func (sub *defaultSubscriber) AddHandler(handler handler.Handler) {
 }
 
 // NewSubscriber returns a new Subscriber
-func NewSubscriber(regAddr string) Subscriber {
+func NewSubscriber(registry registry.Registry) Subscriber {
 	var subSock mangos.Socket
 	var err error
 
 	if subSock, err = sub.NewSocket(); err != nil {
 		log.Fatal("can't get new req socket: ", err.Error())
 	}
-
-	registry := consul.NewRegistry(&api.Config{
-		Address: regAddr,
-		Scheme:  "http",
-	})
 
 	client := service.NewMangoClient(subSock, registry)
 

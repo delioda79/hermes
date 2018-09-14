@@ -13,19 +13,17 @@ func makeServerStr(t *ast.TypeSpec) string {
 	server := `
 // New` + srvName + ` returns a new replier server
 func New` + srvName + ` (
-	regAddr string,
+	registry registry.Registry,
 	serverPort int,
 	hdl  ` + t.Name.Name + `,
 ) {
 
-	replier, _ := replier.NewServer(regAddr, "` + srvName + `-replier", "1")
+	replier, _ := replier.NewServer(registry, "` + srvName + `-replier", "1")
 	handler := handler.NewHandler()
 	` + methodsStr + `
 	replier.AddHandler(handler)
 	replier.AddTransport(tcp.NewTransport())
 	replier.AddTransport(inproc.NewTransport())
-	go replier.Run(serverPort, "inproc", "` + srvName + `-replier")
-	go replier.Run(serverPort, "tcp", "")
 }
 `
 

@@ -15,11 +15,11 @@ func makeClientStr(t *ast.TypeSpec) string {
 	server := `
 // New` + cltName + `  returns a handy client for the API Calls RPC service
 func New` + cltName + `(
-	registryAddr string,
+	registry registry.Registry,
 	transport string,
 	responder ...requester.Responder,
 ) (` + cltName + `, error) {
-	cl, err := requester.NewServer(registryAddr)
+	cl, err := requester.NewServer(registry)
 	if err != nil {
 		return nil, err
 	}

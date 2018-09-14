@@ -9,6 +9,7 @@ import (
 	"nanomsg.org/go-mangos/transport/inproc"
 	"nanomsg.org/go-mangos/transport/tcp"
 )
+import "bitbucket.org/ConsentSystems/mango-micro/mango-service/registry"
 import "bitbucket.org/ConsentSystems/mango-micro/messages"
 
 // APICallsHandlerClient ...
@@ -94,11 +95,11 @@ func (cl *defaultAPICallsHandlerClient) NoParams() (*messages.Trigger, error) {
 
 // NewAPICallsHandlerClient  returns a handy client for the API Calls RPC service
 func NewAPICallsHandlerClient(
-	registryAddr string,
+	registry registry.Registry,
 	transport string,
 	responder ...requester.Responder,
 ) (APICallsHandlerClient, error) {
-	cl, err := requester.NewServer(registryAddr)
+	cl, err := requester.NewServer(registry)
 	if err != nil {
 		return nil, err
 	}

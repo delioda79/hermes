@@ -1,9 +1,8 @@
 package pusher
 
 import (
-	"bitbucket.org/ConsentSystems/mango-micro/mango-service/registry/consul"
+	"bitbucket.org/ConsentSystems/mango-micro/mango-service/registry"
 	"bitbucket.org/ConsentSystems/mango-micro/mango-service/service"
-	"github.com/hashicorp/consul/api"
 	mangos "nanomsg.org/go-mangos"
 )
 
@@ -35,16 +34,11 @@ func (sub *defaultServer) Run(pbs ...Puller) {
 }
 
 // NewServer returns a new Subscriber
-func NewServer(regAddr string) (Server, error) {
+func NewServer(registry registry.Registry) (Server, error) {
 	pushSock, err := NewPusher()
 	if err != nil {
 		return nil, err
 	}
-
-	registry := consul.NewRegistry(&api.Config{
-		Address: regAddr,
-		Scheme:  "http",
-	})
 
 	client := service.NewMangoClient(pushSock, registry)
 

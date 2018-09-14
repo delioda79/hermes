@@ -5,10 +5,9 @@ import (
 	"fmt"
 	"sync"
 
-	"bitbucket.org/ConsentSystems/mango-micro/mango-service/registry/consul"
+	"bitbucket.org/ConsentSystems/mango-micro/mango-service/registry"
 	"bitbucket.org/ConsentSystems/mango-micro/mango-service/service"
 	"bitbucket.org/ConsentSystems/mango-micro/messages"
-	"github.com/hashicorp/consul/api"
 	"github.com/pborman/uuid"
 	mangos "nanomsg.org/go-mangos"
 	"nanomsg.org/go-mangos/protocol/req"
@@ -99,7 +98,7 @@ func (reqs *defaultServer) Run(pbs ...Responder) {
 }
 
 // NewServer returns a new Subscriber
-func NewServer(regAddr string) (Server, error) {
+func NewServer(registry registry.Registry) (Server, error) {
 	rcvChan := make(chan string, 1)
 	pushSock, err := req.NewSocket()
 	if err != nil {
@@ -114,11 +113,6 @@ func NewServer(regAddr string) (Server, error) {
 	if err = pushSock.SetOption(mangos.OptionRaw, true); err != nil {
 		return nil, fmt.Errorf("can't set raw mode: %s", err.Error())
 	}
-
-	registry := consul.NewRegistry(&api.Config{
-		Address: regAddr,
-		Scheme:  "http",
-	})
 
 	client := service.NewMangoClient(pushSock, registry)
 

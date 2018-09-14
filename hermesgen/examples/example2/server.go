@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"bitbucket.org/ConsentSystems/mango-micro/handler"
+	"bitbucket.org/ConsentSystems/mango-micro/mango-service/registry"
 	"bitbucket.org/ConsentSystems/mango-micro/messages"
 	"bitbucket.org/ConsentSystems/mango-micro/replier"
 	"nanomsg.org/go-mangos/transport/inproc"
@@ -13,12 +14,12 @@ import (
 
 // NewAPICallsHandlerServer returns a new replier server
 func NewAPICallsHandlerServer(
-	regAddr string,
+	registry registry.Registry,
 	serverPort int,
 	hdl APICallsHandler,
 ) {
 
-	replier, _ := replier.NewServer(regAddr, "APICallsHandlerServer-replier", "1")
+	replier, _ := replier.NewServer(registry, "APICallsHandlerServer-replier", "1")
 	handler := handler.NewHandler()
 
 	handler.Add("APICallsHandler.RegisterCall", func(in interface{}, out ...*[]byte) error {

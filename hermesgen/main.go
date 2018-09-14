@@ -63,6 +63,11 @@ func main() {
 
 	target := srvGen.MakeHeader(f.Name.Name)
 	targetClient := clGen.MakeHeader(f.Name.Name)
+
+	// Adding the registry import
+	target = strings.Join([]string{target, `import  "bitbucket.org/ConsentSystems/mango-micro/mango-service/registry"`, "\n"}, "")
+	targetClient = strings.Join([]string{targetClient, `import "bitbucket.org/ConsentSystems/mango-micro/mango-service/registry"`, "\n"}, "")
+
 	ast.Inspect(f, func(n ast.Node) bool {
 		switch t := n.(type) {
 		// find variable declarations

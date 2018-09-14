@@ -5,10 +5,9 @@ import (
 	"fmt"
 
 	"bitbucket.org/ConsentSystems/mango-micro/handler"
-	"bitbucket.org/ConsentSystems/mango-micro/mango-service/registry/consul"
+	"bitbucket.org/ConsentSystems/mango-micro/mango-service/registry"
 	"bitbucket.org/ConsentSystems/mango-micro/mango-service/service"
 	"bitbucket.org/ConsentSystems/mango-micro/messages"
-	"github.com/hashicorp/consul/api"
 	mangos "nanomsg.org/go-mangos"
 	"nanomsg.org/go-mangos/protocol/pull"
 )
@@ -73,14 +72,10 @@ func (pubs *defaultServer) Run(port int, transport, addr string) {
 }
 
 func NewServer(
-	regAddr string,
+	registry registry.Registry,
 	serviceName string,
 	version string,
 ) (Server, error) {
-	registry := consul.NewRegistry(&api.Config{
-		Address: regAddr,
-		Scheme:  "http",
-	})
 
 	pullSock, err := pull.NewSocket()
 	if err != nil {

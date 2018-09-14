@@ -1,9 +1,8 @@
 package publisher
 
 import (
-	"bitbucket.org/ConsentSystems/mango-micro/mango-service/registry/consul"
+	"bitbucket.org/ConsentSystems/mango-micro/mango-service/registry"
 	"bitbucket.org/ConsentSystems/mango-micro/mango-service/service"
-	"github.com/hashicorp/consul/api"
 	mangos "nanomsg.org/go-mangos"
 )
 
@@ -41,7 +40,7 @@ func (pubs *defaultServer) Run(port int, transport, addr string) {
 }
 
 func NewServer(
-	regAddr string,
+	registry registry.Registry,
 	serviceName string,
 	version string,
 ) (Server, error) {
@@ -49,10 +48,6 @@ func NewServer(
 	if err != nil {
 		return nil, err
 	}
-	registry := consul.NewRegistry(&api.Config{
-		Address: regAddr,
-		Scheme:  "http",
-	})
 
 	server := service.NewMangoServer(pubSock, registry)
 

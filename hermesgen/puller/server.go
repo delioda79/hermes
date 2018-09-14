@@ -13,12 +13,12 @@ func makeServerStr(t *ast.TypeSpec) string {
 	server := `
 // New` + srvName + ` returns a new puller server
 func New` + srvName + ` (
-	discoveryAddr string,
+	registry registry.Registry,
 	portStr string,
 	hdl  ` + t.Name.Name + `,
 ) (puller.Server, error) {
 	pullserver, _ := puller.NewServer(
-		discoveryAddr,
+		registry,
 		"` + srvName + `-puller",
 		"1",
 	)
@@ -29,8 +29,6 @@ func New` + srvName + ` (
 	}
 	pullserver.AddTransport(inproc.NewTransport())
 	pullserver.AddTransport(tcp.NewTransport())
-	go pullserver.Run(port, "inproc", "` + srvName + `-puller")
-	go pullserver.Run(port, "tcp", "")
 
 	handler := handler.NewHandler()
 

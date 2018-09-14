@@ -15,11 +15,11 @@ func makeClientStr(t *ast.TypeSpec) string {
 	server := `
 // New` + cltName + `  returns a handy client for the API Calls Push/Pull service
 func New` + cltName + `(
-	registryAddr string,
+	registry registry.Registry,
 	transport string,
 	puller ...pusher.Puller,
 ) (` + cltName + `, error) {
-	cl, err := pusher.NewServer(registryAddr)
+	cl, err := pusher.NewServer(registry)
 	if err != nil {
 		return nil, err
 	}
