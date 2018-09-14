@@ -23,10 +23,6 @@ func New` + srvName + ` (
 		"1",
 	)
 
-	port, err := strconv.Atoi(portStr)
-	if err != nil {
-		return nil, fmt.Errorf("wrong port %s", portStr)
-	}
 	pullserver.AddTransport(inproc.NewTransport())
 	pullserver.AddTransport(tcp.NewTransport())
 
