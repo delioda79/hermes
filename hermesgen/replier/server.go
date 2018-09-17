@@ -16,7 +16,7 @@ func New` + srvName + ` (
 	registry registry.Registry,
 	serverPort int,
 	hdl  ` + t.Name.Name + `,
-) {
+) (replier.Server, error) {
 
 	replier, _ := replier.NewServer(registry, "` + srvName + `-replier", "1")
 	handler := handler.NewHandler()
@@ -24,6 +24,8 @@ func New` + srvName + ` (
 	replier.AddHandler(handler)
 	replier.AddTransport(tcp.NewTransport())
 	replier.AddTransport(inproc.NewTransport())
+
+	return replier, nil
 }
 `
 

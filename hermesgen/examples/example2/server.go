@@ -17,7 +17,7 @@ func NewAPICallsHandlerServer(
 	registry registry.Registry,
 	serverPort int,
 	hdl APICallsHandler,
-) {
+) (replier.Server, error) {
 
 	replier, _ := replier.NewServer(registry, "APICallsHandlerServer-replier", "1")
 	handler := handler.NewHandler()
@@ -98,6 +98,6 @@ func NewAPICallsHandlerServer(
 	replier.AddHandler(handler)
 	replier.AddTransport(tcp.NewTransport())
 	replier.AddTransport(inproc.NewTransport())
-	go replier.Run(serverPort, "inproc", "APICallsHandlerServer-replier")
-	go replier.Run(serverPort, "tcp", "")
+
+	return replier, nil
 }
