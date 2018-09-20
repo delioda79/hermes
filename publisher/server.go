@@ -11,6 +11,7 @@ type Server interface {
 	AddTransport(tr mangos.Transport)
 	Run(port int, transport, addr string)
 	Sock() Publisher
+	Stop()
 }
 type defaultServer struct {
 	server  service.Server
@@ -37,6 +38,11 @@ func (pubs *defaultServer) Run(port int, transport, addr string) {
 		transport,
 		pubs.version,
 	)
+}
+
+// Stop stops the server
+func (pubs *defaultServer) Stop() {
+	pubs.server.Stop()
 }
 
 func NewServer(

@@ -21,6 +21,7 @@ type Server interface {
 	AddTransport(tr mangos.Transport)
 	AddHandler(handler handler.Handler)
 	Run(port int, transport, addr string)
+	Stop()
 }
 type defaultServer struct {
 	server   service.Server
@@ -93,6 +94,11 @@ func (reps *defaultServer) Run(port int, transport, addr string) {
 		}
 	}
 
+}
+
+// Stop stops the server
+func (reps *defaultServer) Stop() {
+	reps.server.Stop()
 }
 
 func NewServer(
