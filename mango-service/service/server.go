@@ -17,6 +17,7 @@ type Server interface {
 	Run(name, addr string, port int, transport string, version string)
 	Deregister()
 	GetID() string
+	Stop()
 }
 
 // MangoServer represents a service using mangos sockets
@@ -86,4 +87,10 @@ func (mgs MangoServer) Deregister() {
 
 func (mgs MangoServer) GetID() string {
 	return mgs.ID
+}
+
+func (mgs MangoServer) Stop() {
+	mgs.Sock().Close()
+	mgs.Deregister()
+	return
 }
