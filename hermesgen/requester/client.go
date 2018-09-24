@@ -17,11 +17,16 @@ func makeClientStr(t *ast.TypeSpec) string {
 func New` + cltName + `(
 	registry registry.Registry,
 	transport string,
+	serviceName string,
 	responder ...requester.Responder,
 ) (` + cltName + `, error) {
 	cl, err := requester.NewServer(registry)
 	if err != nil {
 		return nil, err
+	}
+
+	if serviceName == "" {
+		serviceName = "` + t.Name.Name + `"
 	}
 
 	cl.AddTransport(tcp.NewTransport())
@@ -32,6 +37,7 @@ func New` + cltName + `(
 	return &default` + t.Name.Name + `Client{
 		rqstr: cl,
 		deadline: time.Second * 10,
+		serviceName: serviceName,
 	}, nil
 }
 `

@@ -64,7 +64,7 @@ func (cl *default` + nameSp + `Client) ` + mtdName + `(msg ` + name + `) (*` + r
 	}
 	sck := cl.rqstr.Sock()
 	sck.SetDeadline(cl.deadline)
-	resBts, err := sck.Request("` + nameSp + `.` + mtdName + `", bts)
+	resBts, err := sck.Request(cl.serviceName + ".` + mtdName + `", bts)
 	if err != nil {
 		return nil, err
 	}
@@ -89,7 +89,7 @@ func (cl *default` + nameSp + `Client) ` + mtdName + `(msg ` + name + `) (*` + r
 func (cl *default` + nameSp + `Client) ` + mtdName + `() (*` + resultType + `,error) {
 	sck := cl.rqstr.Sock()
 	sck.SetDeadline(cl.deadline)
-	resBts, err := sck.Request("` + nameSp + `.` + mtdName + `", []byte{})
+	resBts, err := sck.Request(cl.serviceName + ".` + mtdName + `", []byte{})
 	if err != nil {
 		return nil, err
 	}
@@ -121,6 +121,7 @@ func makeMethods(nameSp string, lst *ast.FieldList) string {
 type default` + nameSp + `Client struct{
 	rqstr requester.Server
 	deadline time.Duration
+	serviceName string
 }
 
 // SetDeadline Sets the deadline for the requests

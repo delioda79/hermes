@@ -16,10 +16,17 @@ func New` + srvName + ` (
 	registry registry.Registry,
 	portStr string,
 	hdl  ` + t.Name.Name + `,
+	serviceName string,
 ) (puller.Server, error) {
+
+	serviceNmsp := serviceName
+	if serviceName == "" {
+		serviceName = "` + srvName + `"
+		serviceNmsp = "` + t.Name.Name + `"
+	}
 	pullserver, _ := puller.NewServer(
 		registry,
-		"` + srvName + `-puller",
+		serviceName  + "-puller",
 		"1",
 	)
 

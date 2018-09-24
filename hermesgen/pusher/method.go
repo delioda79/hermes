@@ -25,14 +25,14 @@ func (cl *default` + nameSp + `Client) ` + mtdName + `(msg ` + name + `) error {
 	if err != nil {
 		return err
 	}
-	return cl.psh.Push("` + nameSp + `.` + mtdName + `", bts)
+	return cl.psh.Push(cl.serviceName + ".` + mtdName + `", bts)
 }
 `
 	} else {
 		mtdStr = `
 func (cl *default` + nameSp + `Client) ` + mtdName + `() error {
 	bts := []byte{}
-	return cl.psh.Push("` + nameSp + `.` + mtdName + `", bts)
+	return cl.psh.Push(cl.serviceName + ".` + mtdName + `", bts)
 }
 `
 	}
@@ -52,6 +52,7 @@ func makeMethods(nameSp string, lst *ast.FieldList) string {
 	defaultCl := `
 type default` + nameSp + `Client struct{
 	psh pusher.Pusher
+	serviceName string
 }
 
 `

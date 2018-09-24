@@ -20,7 +20,7 @@ func makeMethod(nameSp string, mtd *ast.Field) string {
 	if len(params) == 1 {
 		name := utils.GetNameFromTopLevelNode(params[0].Type)
 		mtdStr = `
-	handler.Add("` + nameSp + `.` + mtdName + `", func(msg interface{}, rsp ...*[]byte) error {
+	handler.Add(serviceNmsp + ".` + mtdName + `", func(msg interface{}, rsp ...*[]byte) error {
 		inParam := &` + name + `{}
 		arg, ok := msg.([]byte)
 
@@ -41,7 +41,7 @@ func makeMethod(nameSp string, mtd *ast.Field) string {
 `
 	} else {
 		mtdStr = `
-	handler.Add("` + nameSp + `.` + mtdName + ` ", func(msg interface{}, rsp ...*[]byte) error {
+	handler.Add(serviceNmsp + ".` + mtdName + ` ", func(msg interface{}, rsp ...*[]byte) error {
 		hdl.` + mtdName + `()
 		return nil
 	})

@@ -16,9 +16,15 @@ func New` + srvName + ` (
 	registry registry.Registry,
 	serverPort int,
 	hdl  ` + t.Name.Name + `,
+	serviceName string,
 ) (replier.Server, error) {
+	serviceNmsp := serviceName
+	if serviceName == "" {
+		serviceName = "` + srvName + `"
+		serviceNmsp = "` + t.Name.Name + `"
+	}
 
-	replier, _ := replier.NewServer(registry, "` + srvName + `-replier", "1")
+	replier, _ := replier.NewServer(registry, serviceName  + "-replier", "1")
 	handler := handler.NewHandler()
 	` + methodsStr + `
 	replier.AddHandler(handler)

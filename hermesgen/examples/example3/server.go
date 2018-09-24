@@ -8,18 +8,25 @@ import (
 	"nanomsg.org/go-mangos/transport/inproc"
 	"nanomsg.org/go-mangos/transport/tcp"
 )
+import "bitbucket.org/ConsentSystems/mango-micro/mango-service/registry"
 
 // NewAPICallsHandlerServer returns a new replier server
 func NewAPICallsHandlerServer(
-	regAddr string,
+	registry registry.Registry,
 	serverPort int,
 	hdl APICallsHandler,
-) {
+	serviceName string,
+) (replier.Server, error) {
+	serviceNmsp := serviceName
+	if serviceName == "" {
+		serviceName = "APICallsHandlerServer"
+		serviceNmsp = "APICallsHandler"
+	}
 
-	replier, _ := replier.NewServer(regAddr, "APICallsHandlerServer-replier", "1")
+	replier, _ := replier.NewServer(registry, serviceName+"-replier", "1")
 	handler := handler.NewHandler()
 
-	handler.Add("APICallsHandler.TestBool", func(in interface{}, out ...*[]byte) error {
+	handler.Add(serviceNmsp+".TestBool", func(in interface{}, out ...*[]byte) error {
 		*out[0] = []byte{}
 		*out[1] = []byte{}
 		req := &APICallMessage{}
@@ -48,6 +55,6 @@ func NewAPICallsHandlerServer(
 	replier.AddHandler(handler)
 	replier.AddTransport(tcp.NewTransport())
 	replier.AddTransport(inproc.NewTransport())
-	go replier.Run(serverPort, "inproc", "APICallsHandlerServer-replier")
-	go replier.Run(serverPort, "tcp", "")
+
+	return replier, nil
 }

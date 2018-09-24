@@ -9,6 +9,7 @@ import (
 	"nanomsg.org/go-mangos/transport/inproc"
 	"nanomsg.org/go-mangos/transport/tcp"
 )
+import "bitbucket.org/ConsentSystems/mango-micro/mango-service/registry"
 
 // APICallsHandlerClient ...
 type APICallsHandlerClient interface {
@@ -16,8 +17,9 @@ type APICallsHandlerClient interface {
 }
 
 type defaultAPICallsHandlerClient struct {
-	rqstr    requester.Server
-	deadline time.Duration
+	rqstr       requester.Server
+	deadline    time.Duration
+	serviceName string
 }
 
 // SetDeadline Sets the deadline for the requests
@@ -34,7 +36,7 @@ func (cl *defaultAPICallsHandlerClient) TestBool(msg APICallMessage) (*APICallMe
 	}
 	sck := cl.rqstr.Sock()
 	sck.SetDeadline(cl.deadline)
-	resBts, err := sck.Request("APICallsHandler.TestBool", bts)
+	resBts, err := sck.Request(cl.serviceName+".TestBool", bts)
 	if err != nil {
 		return nil, err
 	}
@@ -50,13 +52,18 @@ func (cl *defaultAPICallsHandlerClient) TestBool(msg APICallMessage) (*APICallMe
 
 // NewAPICallsHandlerClient  returns a handy client for the API Calls RPC service
 func NewAPICallsHandlerClient(
-	registryAddr string,
+	registry registry.Registry,
 	transport string,
+	serviceName string,
 	responder ...requester.Responder,
 ) (APICallsHandlerClient, error) {
-	cl, err := requester.NewServer(registryAddr)
+	cl, err := requester.NewServer(registry)
 	if err != nil {
 		return nil, err
+	}
+
+	if serviceName == "" {
+		serviceName = "APICallsHandler"
 	}
 
 	cl.AddTransport(tcp.NewTransport())
@@ -65,7 +72,8 @@ func NewAPICallsHandlerClient(
 	go cl.Run(responder...)
 
 	return &defaultAPICallsHandlerClient{
-		rqstr:    cl,
-		deadline: time.Second * 10,
+		rqstr:       cl,
+		deadline:    time.Second * 10,
+		serviceName: serviceName,
 	}, nil
 }

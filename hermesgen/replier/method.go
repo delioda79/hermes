@@ -52,7 +52,7 @@ func makeMethod(nameSp string, mtd *ast.Field) string {
 			// }
 			name := utils.GetNameFromTopLevelNode(params[0].Type)
 			mtdStr = `
-	handler.Add("` + nameSp + `.` + mtdName + `", func(in interface{}, out ...*[]byte) error {
+	handler.Add(serviceNmsp + ".` + mtdName + `", func(in interface{}, out ...*[]byte) error {
 		*out[0] = []byte{}
 		*out[1] = []byte{}
 		req := &` + name + `{}
@@ -86,7 +86,7 @@ func makeMethod(nameSp string, mtd *ast.Field) string {
 	} else {
 		mtdStr = `
 
-	handler.Add("` + nameSp + `.` + mtdName + `", func(in interface{}, out ...*[]byte) error {
+	handler.Add(serviceNmsp + ".` + mtdName + `", func(in interface{}, out ...*[]byte) error {
 		*out[0] = []byte{}
 		*out[1] = []byte{}
 		fmt.Println("RECEIVED HOOK")

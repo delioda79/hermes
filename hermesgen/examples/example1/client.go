@@ -7,6 +7,7 @@ import (
 	"nanomsg.org/go-mangos/transport/inproc"
 	"nanomsg.org/go-mangos/transport/tcp"
 )
+import "bitbucket.org/ConsentSystems/mango-micro/mango-service/registry"
 
 type APICallsHandlerClient interface {
 	RegisterCall(msg APICallMessage) error
@@ -14,7 +15,8 @@ type APICallsHandlerClient interface {
 }
 
 type defaultAPICallsHandlerClient struct {
-	psh pusher.Pusher
+	psh         pusher.Pusher
+	serviceName string
 }
 
 func (cl *defaultAPICallsHandlerClient) RegisterCall(msg APICallMessage) error {
@@ -22,21 +24,22 @@ func (cl *defaultAPICallsHandlerClient) RegisterCall(msg APICallMessage) error {
 	if err != nil {
 		return err
 	}
-	return cl.psh.Push("APICallsHandler.RegisterCall", bts)
+	return cl.psh.Push(cl.serviceName+".RegisterCall", bts)
 }
 
 func (cl *defaultAPICallsHandlerClient) NoParamsCall() error {
 	bts := []byte{}
-	return cl.psh.Push("APICallsHandler.NoParamsCall", bts)
+	return cl.psh.Push(cl.serviceName+".NoParamsCall", bts)
 }
 
 // NewAPICallsHandlerClient  returns a handy client for the API Calls Push/Pull service
 func NewAPICallsHandlerClient(
-	registryAddr string,
+	registry registry.Registry,
 	transport string,
+	serviceName string,
 	puller ...pusher.Puller,
 ) (APICallsHandlerClient, error) {
-	cl, err := pusher.NewServer(registryAddr)
+	cl, err := pusher.NewServer(registry)
 	if err != nil {
 		return nil, err
 	}
@@ -46,6 +49,7 @@ func NewAPICallsHandlerClient(
 
 	cl.Run(puller...)
 	return &defaultAPICallsHandlerClient{
-		psh: cl.Sock(),
+		psh:         cl.Sock(),
+		serviceName: serviceName,
 	}, nil
 }

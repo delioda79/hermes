@@ -3,38 +3,39 @@ package example1
 import (
 	"encoding/json"
 	"fmt"
-	"strconv"
 
 	"bitbucket.org/ConsentSystems/mango-micro/handler"
 	"bitbucket.org/ConsentSystems/mango-micro/puller"
 	"nanomsg.org/go-mangos/transport/inproc"
 	"nanomsg.org/go-mangos/transport/tcp"
 )
+import "bitbucket.org/ConsentSystems/mango-micro/mango-service/registry"
 
 // NewAPICallsHandlerServer returns a new puller server
 func NewAPICallsHandlerServer(
-	discoveryAddr string,
+	registry registry.Registry,
 	portStr string,
 	hdl APICallsHandler,
+	serviceName string,
 ) (puller.Server, error) {
+
+	serviceNmsp := serviceName
+	if serviceName == "" {
+		serviceName = "APICallsHandlerServer"
+		serviceNmsp = "APICallsHandler"
+	}
 	pullserver, _ := puller.NewServer(
-		discoveryAddr,
-		"APICallsHandlerServer-puller",
+		registry,
+		serviceName+"-puller",
 		"1",
 	)
 
-	port, err := strconv.Atoi(portStr)
-	if err != nil {
-		return nil, fmt.Errorf("wrong port %s", portStr)
-	}
 	pullserver.AddTransport(inproc.NewTransport())
 	pullserver.AddTransport(tcp.NewTransport())
-	go pullserver.Run(port, "inproc", "APICallsHandlerServer-puller")
-	go pullserver.Run(port, "tcp", "")
 
 	handler := handler.NewHandler()
 
-	handler.Add("APICallsHandler.RegisterCall ", func(msg interface{}, rsp ...*[]byte) error {
+	handler.Add(serviceNmsp+".RegisterCall", func(msg interface{}, rsp ...*[]byte) error {
 		inParam := &APICallMessage{}
 		arg, ok := msg.([]byte)
 
@@ -53,7 +54,7 @@ func NewAPICallsHandlerServer(
 		return nil
 	})
 
-	handler.Add("APICallsHandler.NoParamsCall ", func(msg interface{}, rsp ...*[]byte) error {
+	handler.Add(serviceNmsp+".NoParamsCall ", func(msg interface{}, rsp ...*[]byte) error {
 		hdl.NoParamsCall()
 		return nil
 	})

@@ -17,6 +17,7 @@ func makeClientStr(t *ast.TypeSpec) string {
 func New` + cltName + `(
 	registry registry.Registry,
 	transport string,
+	serviceName string,
 	puller ...pusher.Puller,
 ) (` + cltName + `, error) {
 	cl, err := pusher.NewServer(registry)
@@ -30,6 +31,7 @@ func New` + cltName + `(
 	cl.Run(puller...)
 	return &default` + t.Name.Name + `Client{
 		psh: cl.Sock(),
+		serviceName: serviceName,
 	}, nil
 }
 `
