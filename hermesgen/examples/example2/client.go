@@ -20,8 +20,9 @@ type APICallsHandlerClient interface {
 }
 
 type defaultAPICallsHandlerClient struct {
-	rqstr    requester.Server
-	deadline time.Duration
+	rqstr       requester.Server
+	deadline    time.Duration
+	serviceName string
 }
 
 // SetDeadline Sets the deadline for the requests
@@ -38,7 +39,7 @@ func (cl *defaultAPICallsHandlerClient) RegisterCall(msg APICallMessage) (*APICa
 	}
 	sck := cl.rqstr.Sock()
 	sck.SetDeadline(cl.deadline)
-	resBts, err := sck.Request("APICallsHandler.RegisterCall", bts)
+	resBts, err := sck.Request(cl.serviceName+".RegisterCall", bts)
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +62,7 @@ func (cl *defaultAPICallsHandlerClient) External(msg messages.Trigger) (*message
 	}
 	sck := cl.rqstr.Sock()
 	sck.SetDeadline(cl.deadline)
-	resBts, err := sck.Request("APICallsHandler.External", bts)
+	resBts, err := sck.Request(cl.serviceName+".External", bts)
 	if err != nil {
 		return nil, err
 	}
@@ -79,7 +80,7 @@ func (cl *defaultAPICallsHandlerClient) External(msg messages.Trigger) (*message
 func (cl *defaultAPICallsHandlerClient) NoParams() (*messages.Trigger, error) {
 	sck := cl.rqstr.Sock()
 	sck.SetDeadline(cl.deadline)
-	resBts, err := sck.Request("APICallsHandler.NoParams", []byte{})
+	resBts, err := sck.Request(cl.serviceName+".NoParams", []byte{})
 	if err != nil {
 		return nil, err
 	}
@@ -97,11 +98,16 @@ func (cl *defaultAPICallsHandlerClient) NoParams() (*messages.Trigger, error) {
 func NewAPICallsHandlerClient(
 	registry registry.Registry,
 	transport string,
+	serviceName string,
 	responder ...requester.Responder,
 ) (APICallsHandlerClient, error) {
 	cl, err := requester.NewServer(registry)
 	if err != nil {
 		return nil, err
+	}
+
+	if serviceName == "" {
+		serviceName = "APICallsHandler"
 	}
 
 	cl.AddTransport(tcp.NewTransport())
@@ -110,7 +116,8 @@ func NewAPICallsHandlerClient(
 	go cl.Run(responder...)
 
 	return &defaultAPICallsHandlerClient{
-		rqstr:    cl,
-		deadline: time.Second * 10,
+		rqstr:       cl,
+		deadline:    time.Second * 10,
+		serviceName: serviceName,
 	}, nil
 }

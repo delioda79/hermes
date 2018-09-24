@@ -7,7 +7,6 @@ import (
 // MakeServerStr returns a string with the server instanciator
 func makeServerStr(t *ast.TypeSpec) string {
 	srvName := t.Name.Name + "Server"
-
 	itp := t.Type.(*ast.InterfaceType)
 	methodsStr := makeMethods(t.Name.Name, itp.Methods)
 	server := `
@@ -20,9 +19,10 @@ func New` + srvName + ` (
 ) (replier.Server, error) {
 	serviceNmsp := serviceName
 	if serviceName == "" {
-		serviceName = "` + srvName + `"
 		serviceNmsp = "` + t.Name.Name + `"
 	}
+
+	serviceName = serviceNmsp + "Server"
 
 	replier, _ := replier.NewServer(registry, serviceName  + "-replier", "1")
 	handler := handler.NewHandler()

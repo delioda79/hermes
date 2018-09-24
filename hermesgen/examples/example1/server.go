@@ -21,9 +21,11 @@ func NewAPICallsHandlerServer(
 
 	serviceNmsp := serviceName
 	if serviceName == "" {
-		serviceName = "APICallsHandlerServer"
 		serviceNmsp = "APICallsHandler"
 	}
+
+	serviceName = serviceNmsp + "Server"
+
 	pullserver, _ := puller.NewServer(
 		registry,
 		serviceName+"-puller",

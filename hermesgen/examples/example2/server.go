@@ -17,12 +17,19 @@ func NewAPICallsHandlerServer(
 	registry registry.Registry,
 	serverPort int,
 	hdl APICallsHandler,
+	serviceName string,
 ) (replier.Server, error) {
+	serviceNmsp := serviceName
+	if serviceName == "" {
+		serviceNmsp = "APICallsHandler"
+	}
 
-	replier, _ := replier.NewServer(registry, "APICallsHandlerServer-replier", "1")
+	serviceName = serviceNmsp + "Server"
+
+	replier, _ := replier.NewServer(registry, serviceName+"-replier", "1")
 	handler := handler.NewHandler()
 
-	handler.Add("APICallsHandler.RegisterCall", func(in interface{}, out ...*[]byte) error {
+	handler.Add(serviceNmsp+".RegisterCall", func(in interface{}, out ...*[]byte) error {
 		*out[0] = []byte{}
 		*out[1] = []byte{}
 		req := &APICallMessage{}
@@ -48,7 +55,7 @@ func NewAPICallsHandlerServer(
 		return nil
 	})
 
-	handler.Add("APICallsHandler.External", func(in interface{}, out ...*[]byte) error {
+	handler.Add(serviceNmsp+".External", func(in interface{}, out ...*[]byte) error {
 		*out[0] = []byte{}
 		*out[1] = []byte{}
 		req := &messages.Trigger{}
@@ -74,7 +81,7 @@ func NewAPICallsHandlerServer(
 		return nil
 	})
 
-	handler.Add("APICallsHandler.NoParams", func(in interface{}, out ...*[]byte) error {
+	handler.Add(serviceNmsp+".NoParams", func(in interface{}, out ...*[]byte) error {
 		*out[0] = []byte{}
 		*out[1] = []byte{}
 		fmt.Println("RECEIVED HOOK")

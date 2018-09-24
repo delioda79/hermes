@@ -21,9 +21,11 @@ func New` + srvName + ` (
 
 	serviceNmsp := serviceName
 	if serviceName == "" {
-		serviceName = "` + srvName + `"
 		serviceNmsp = "` + t.Name.Name + `"
 	}
+
+	serviceName = serviceNmsp + "Server"
+
 	pullserver, _ := puller.NewServer(
 		registry,
 		serviceName  + "-puller",
