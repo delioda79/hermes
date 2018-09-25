@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 
+	"bitbucket.org/ConsentSystems/logging"
 	"bitbucket.org/ConsentSystems/mango-micro/handler"
 	"bitbucket.org/ConsentSystems/mango-micro/mango-service/registry"
 	"bitbucket.org/ConsentSystems/mango-micro/mango-service/service"
@@ -58,7 +59,13 @@ func (sub *defaultSubscriber) Run(pbs ...Publisher) {
 			go func(hdl handler.Handler) {
 				defer func() {
 					if r := recover(); r != nil {
-						fmt.Println("Recovered from: ", r)
+						if sub.client.Logger() != nil {
+							sub.client.Logger().Fatal(logging.Log{
+								Code:   700,
+								Status: "500",
+								Detail: fmt.Sprintf("Recovered from: %v", r),
+							})
+						}
 					}
 				}()
 				hdl.Run(msg.Name, msg.Params)

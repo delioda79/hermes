@@ -2,6 +2,12 @@
 
 
 [[projects]]
+  name = "bitbucket.org/ConsentSystems/logging"
+  packages = ["."]
+  revision = "690fb9b2c5f8fdac10ca19a286097bd235b7eae9"
+  version = "v0.2"
+
+[[projects]]
   name = "github.com/hashicorp/consul"
   packages = ["api"]
   revision = "5174058f0d2bda63fa5198ab96c33d9a909c58ed"
@@ -71,6 +77,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "2482ed3e99fd5c3fec395f7395e7237574fc2b8ff88395e5e417c480e60bd450"
+  inputs-digest = "e9351a2a9a0f3951f934ab5feca1fa1d53fd3c9b318778e3bed153b81bbef00c"
   solver-name = "gps-cdcl"
   solver-version = 1

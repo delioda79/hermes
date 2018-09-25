@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"bitbucket.org/ConsentSystems/logging"
 	"bitbucket.org/ConsentSystems/mango-micro/handler"
 	"bitbucket.org/ConsentSystems/mango-micro/mango-service/registry"
 	"bitbucket.org/ConsentSystems/mango-micro/mango-service/service"
@@ -62,7 +63,13 @@ func (pubs *defaultServer) Run(port int, transport, addr string) {
 			go func(hdl handler.Handler) {
 				defer func() {
 					if r := recover(); r != nil {
-						fmt.Println("Recovered from: ", r)
+						if pubs.server.Logger() != nil {
+							pubs.server.Logger().Fatal(logging.Log{
+								Code:   700,
+								Status: "500",
+								Detail: fmt.Sprintf("Recovered from: %v", r),
+							})
+						}
 					}
 				}()
 				hdl.Run(msg.Name, msg.Params)

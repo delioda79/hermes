@@ -7,6 +7,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"bitbucket.org/ConsentSystems/logging"
 	"bitbucket.org/ConsentSystems/mango-micro/mango-service/registry"
 	"nanomsg.org/go-mangos"
 )
@@ -23,6 +24,7 @@ type Server interface {
 // MangoServer represents a service using mangos sockets
 type MangoServer struct {
 	MangoService
+	logger logging.Logger
 }
 
 // NewMangoServer creates a new mango service

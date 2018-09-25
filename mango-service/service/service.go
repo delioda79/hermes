@@ -1,6 +1,8 @@
 package service
 
 import (
+	"bitbucket.org/ConsentSystems/logging"
+	"bitbucket.org/ConsentSystems/mango-micro/logger"
 	"bitbucket.org/ConsentSystems/mango-micro/mango-service/registry"
 	"nanomsg.org/go-mangos"
 )
@@ -11,6 +13,8 @@ type Service interface {
 	Receive() ([]byte, error)
 	Sock() mangos.Socket
 	Registry() registry.Registry
+	Logger() logging.Logger
+	SetLogger(lgr logging.Logger)
 }
 
 // MangoService represents a service using mangos sockets
@@ -18,6 +22,7 @@ type MangoService struct {
 	socket   mangos.Socket
 	registry registry.Registry
 	ID       string
+	logger   logging.Logger
 }
 
 // NewMangoService creates a new mango service
@@ -26,6 +31,7 @@ func NewMangoService(sock mangos.Socket, reg registry.Registry) Service {
 	return &MangoService{
 		socket:   sock,
 		registry: reg,
+		logger:   logger.NewBasicLogger(),
 	}
 }
 
@@ -47,4 +53,14 @@ func (mgs *MangoService) Sock() mangos.Socket {
 // Registry returns theinternal registry
 func (mgs *MangoService) Registry() registry.Registry {
 	return mgs.registry
+}
+
+// Logger returns the internal logger
+func (mgs *MangoService) Logger() logging.Logger {
+	return mgs.logger
+}
+
+// SetLogger sets the internl logger
+func (mgs *MangoService) SetLogger(lgr logging.Logger) {
+	mgs.logger = lgr
 }
