@@ -21,6 +21,7 @@ type Server interface {
 	Run(pbs ...Responder)
 	OpenSockets() int
 	TotRcv() int
+	Client() service.Client
 }
 type defaultServer struct {
 	client        service.Client
@@ -95,6 +96,11 @@ func (reqs *defaultServer) Run(pbs ...Responder) {
 		}
 		reqs.srvMutex.Unlock()
 	}
+}
+
+// Client returns teh client
+func (reqs *defaultServer) Client() service.Client {
+	return reqs.client
 }
 
 // NewServer returns a new Subscriber

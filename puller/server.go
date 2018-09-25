@@ -19,6 +19,7 @@ type Server interface {
 	AddHandler(handler handler.Handler)
 	Run(port int, transport, addr string)
 	Stop()
+	Server() service.Server
 }
 type defaultServer struct {
 	server   service.Server
@@ -82,6 +83,11 @@ func (pubs *defaultServer) Run(port int, transport, addr string) {
 // Stop stops the server
 func (pubs *defaultServer) Stop() {
 	pubs.server.Stop()
+}
+
+// Server returns the server
+func (pubs *defaultServer) Server() service.Server {
+	return pubs.server
 }
 
 func NewServer(

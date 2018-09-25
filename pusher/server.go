@@ -11,6 +11,7 @@ type Server interface {
 	AddTransport(tr mangos.Transport)
 	Sock() Pusher
 	Run(pbs ...Puller)
+	Client() service.Client
 }
 type defaultServer struct {
 	client service.Client
@@ -31,6 +32,11 @@ func (sub *defaultServer) Run(pbs ...Puller) {
 	for _, p := range pbs {
 		sub.client.Connect(p.Name, p.Version, p.Protocol)
 	}
+}
+
+// Client returns the client
+func (sub *defaultServer) Client() service.Client {
+	return sub.client
 }
 
 // NewServer returns a new Subscriber

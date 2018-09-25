@@ -20,6 +20,7 @@ type Subscriber interface {
 	AddTransport(tr mangos.Transport)
 	Run(pbs ...Publisher)
 	AddHandler(handler handler.Handler)
+	Client() service.Client
 }
 type defaultSubscriber struct {
 	client   service.Client
@@ -77,6 +78,11 @@ func (sub *defaultSubscriber) Run(pbs ...Publisher) {
 // AddHandler adds a hand;er to the subscriber
 func (sub *defaultSubscriber) AddHandler(handler handler.Handler) {
 	sub.handlers = append(sub.handlers, handler)
+}
+
+// Client returns teh client
+func (sub *defaultSubscriber) Client() service.Client {
+	return sub.client
 }
 
 // NewSubscriber returns a new Subscriber
