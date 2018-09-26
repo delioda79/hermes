@@ -4,8 +4,8 @@
 [[projects]]
   name = "bitbucket.org/ConsentSystems/logging"
   packages = ["."]
-  revision = "690fb9b2c5f8fdac10ca19a286097bd235b7eae9"
-  version = "v0.2"
+  revision = "51352e029965ce471a26550c0759cd2416819694"
+  version = "v0.3"
 
 [[projects]]
   name = "github.com/hashicorp/consul"
