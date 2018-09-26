@@ -34,3 +34,7 @@ func (bl *basicLogger) Fatal(msg logging.Log) error {
 	fmt.Printf("%v", msg)
 	return nil
 }
+
+func (bl *basicLogger) SetLevel(lvl int) error {
+	return nil
+}
