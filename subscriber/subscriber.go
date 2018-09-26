@@ -41,6 +41,16 @@ func (sub *defaultSubscriber) Run(pbs ...Publisher) {
 	err := sub.client.Sock().SetOption(mangos.OptionSubscribe, []byte(""))
 	if err != nil {
 		fmt.Println("Impossible to subscribe", err)
+		if sub.client.Logger() != nil {
+			sub.client.Logger().Error(logging.Log{
+				Code:   701,
+				Status: "404",
+				Detail: fmt.Sprintf(
+					"Impossible to subscribe: %v",
+					err,
+				),
+			})
+		}
 		os.Exit(1)
 	}
 	for {
@@ -52,7 +62,16 @@ func (sub *defaultSubscriber) Run(pbs ...Publisher) {
 		msg := &messages.Trigger{}
 		err = json.Unmarshal(bts, msg)
 		if err != nil {
-			fmt.Println("error unmsrshaling", err)
+			if sub.client.Logger() != nil {
+				sub.client.Logger().Error(logging.Log{
+					Code:   704,
+					Status: "404",
+					Detail: fmt.Sprintf(
+						"error unmarshaling: %v",
+						err,
+					),
+				})
+			}
 			continue
 		}
 
@@ -75,7 +94,9 @@ func (sub *defaultSubscriber) Run(pbs ...Publisher) {
 						Code:   701,
 						Status: "404",
 						Detail: fmt.Sprintf(
-							"error unmsrshaling: %v",
+							"Error while calling: %s with params %v: %v",
+							msg.Name,
+							msg.Params,
 							err,
 						),
 					})

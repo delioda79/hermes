@@ -81,7 +81,6 @@ func (reps *defaultServer) Run(port int, transport, addr string) {
 				err = json.Unmarshal(bts, msg)
 				if err != nil {
 					*rsp[1] = []byte(err.Error())
-					fmt.Println("error unmsrshaling", err)
 
 					if err != nil {
 						if reps.server.Logger() != nil {
@@ -102,7 +101,9 @@ func (reps *defaultServer) Run(port int, transport, addr string) {
 							Code:   701,
 							Status: "404",
 							Detail: fmt.Sprintf(
-								"error unmsrshaling: %v",
+								"Error while calling: %s with params %v: %v",
+								msg.Name,
+								msg.Params,
 								err,
 							),
 						})
@@ -118,7 +119,16 @@ func (reps *defaultServer) Run(port int, transport, addr string) {
 				time.Sleep(time.Microsecond * 5)
 				err := reps.server.Sock().SendMsg(response)
 				if err != nil {
-					fmt.Println("SOmething went wrong: ", err)
+					if reps.server.Logger() != nil {
+						reps.server.Logger().Error(logging.Log{
+							Code:   702,
+							Status: "404",
+							Detail: fmt.Sprintf(
+								"Something went wrong: : %v",
+								err,
+							),
+						})
+					}
 				}
 				reps.mx.Unlock()
 			}(hdl, rawMsg)

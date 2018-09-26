@@ -56,7 +56,16 @@ func (pubs *defaultServer) Run(port int, transport, addr string) {
 		msg := &messages.Trigger{}
 		err = json.Unmarshal(bts, msg)
 		if err != nil {
-			fmt.Println("error unmsrshaling", err)
+			if pubs.server.Logger() != nil {
+				pubs.server.Logger().Error(logging.Log{
+					Code:   704,
+					Status: "404",
+					Detail: fmt.Sprintf(
+						"Error unmarshaling %v",
+						err,
+					),
+				})
+			}
 			continue
 		}
 
@@ -80,9 +89,10 @@ func (pubs *defaultServer) Run(port int, transport, addr string) {
 							Code:   701,
 							Status: "404",
 							Detail: fmt.Sprintf(
-								"Error while calling: %s with params %v",
+								"Error while calling: %s with params %v: %v",
 								msg.Name,
 								msg.Params,
+								err,
 							),
 						})
 					}
