@@ -118,17 +118,15 @@ func (reps *defaultServer) Run(port int, transport, addr string) {
 				response.Header = (*origMsg).Header
 				time.Sleep(time.Microsecond * 5)
 				err := reps.server.Sock().SendMsg(response)
-				if err != nil {
-					if reps.server.Logger() != nil {
-						reps.server.Logger().Error(logging.Log{
-							Code:   702,
-							Status: "404",
-							Detail: fmt.Sprintf(
-								"Something went wrong: : %v",
-								err,
-							),
-						})
-					}
+				if err != nil && reps.server.Logger() != nil {
+					reps.server.Logger().Error(logging.Log{
+						Code:   702,
+						Status: "404",
+						Detail: fmt.Sprintf(
+							"Something went wrong: : %v",
+							err,
+						),
+					})
 				}
 				reps.mx.Unlock()
 			}(hdl, rawMsg)

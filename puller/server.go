@@ -83,19 +83,17 @@ func (pubs *defaultServer) Run(port int, transport, addr string) {
 					}
 				}()
 				err := hdl.Run(msg.Name, msg.Params)
-				if err != nil {
-					if pubs.server.Logger() != nil {
-						pubs.server.Logger().Error(logging.Log{
-							Code:   701,
-							Status: "404",
-							Detail: fmt.Sprintf(
-								"Error while calling: %s with params %v: %v",
-								msg.Name,
-								string(msg.Params),
-								err,
-							),
-						})
-					}
+				if err != nil && pubs.server.Logger() != nil {
+					pubs.server.Logger().Error(logging.Log{
+						Code:   701,
+						Status: "404",
+						Detail: fmt.Sprintf(
+							"Error while calling: %s with params %v: %v",
+							msg.Name,
+							string(msg.Params),
+							err,
+						),
+					})
 				}
 			}(hdl)
 		}

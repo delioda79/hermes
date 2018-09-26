@@ -89,7 +89,7 @@ func (sub *defaultSubscriber) Run(pbs ...Publisher) {
 					}
 				}()
 				err := hdl.Run(msg.Name, msg.Params)
-				if sub.client.Logger() != nil {
+				if err != nil && sub.client.Logger() != nil {
 					sub.client.Logger().Error(logging.Log{
 						Code:   701,
 						Status: "404",
