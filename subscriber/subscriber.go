@@ -96,7 +96,7 @@ func (sub *defaultSubscriber) Run(pbs ...Publisher) {
 						Detail: fmt.Sprintf(
 							"Error while calling: %s with params %v: %v",
 							msg.Name,
-							msg.Params,
+							string(msg.Params),
 							err,
 						),
 					})

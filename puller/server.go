@@ -91,7 +91,7 @@ func (pubs *defaultServer) Run(port int, transport, addr string) {
 							Detail: fmt.Sprintf(
 								"Error while calling: %s with params %v: %v",
 								msg.Name,
-								msg.Params,
+								string(msg.Params),
 								err,
 							),
 						})
