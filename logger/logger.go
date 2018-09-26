@@ -35,6 +35,5 @@ func (bl *basicLogger) Fatal(msg logging.Log) error {
 	return nil
 }
 
-func (bl *basicLogger) SetLevel(lvl int) error {
-	return nil
+func (bl *basicLogger) SetLevel(lvl int) {
 }
