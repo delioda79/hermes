@@ -82,8 +82,31 @@ func (reps *defaultServer) Run(port int, transport, addr string) {
 				if err != nil {
 					*rsp[1] = []byte(err.Error())
 					fmt.Println("error unmsrshaling", err)
+
+					if err != nil {
+						if reps.server.Logger() != nil {
+							reps.server.Logger().Error(logging.Log{
+								Code:   702,
+								Status: "404",
+								Detail: fmt.Sprintf(
+									"error unmsrshaling: %v",
+									err,
+								),
+							})
+						}
+					}
 				} else {
-					hdl.Run(msg.Name, msg.Params, rsp...)
+					err := hdl.Run(msg.Name, msg.Params, rsp...)
+					if err != nil && reps.server.Logger() != nil {
+						reps.server.Logger().Error(logging.Log{
+							Code:   701,
+							Status: "404",
+							Detail: fmt.Sprintf(
+								"error unmsrshaling: %v",
+								err,
+							),
+						})
+					}
 				}
 				body, _ := json.Marshal(rsp)
 				msg.Params = body

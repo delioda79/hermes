@@ -69,7 +69,17 @@ func (sub *defaultSubscriber) Run(pbs ...Publisher) {
 						}
 					}
 				}()
-				hdl.Run(msg.Name, msg.Params)
+				err := hdl.Run(msg.Name, msg.Params)
+				if sub.client.Logger() != nil {
+					sub.client.Logger().Error(logging.Log{
+						Code:   701,
+						Status: "404",
+						Detail: fmt.Sprintf(
+							"error unmsrshaling: %v",
+							err,
+						),
+					})
+				}
 			}(hdl)
 		}
 	}
