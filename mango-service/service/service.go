@@ -1,6 +1,8 @@
 package service
 
 import (
+	"time"
+
 	"bitbucket.org/ConsentSystems/logging"
 	"bitbucket.org/ConsentSystems/mango-micro/logger"
 	"bitbucket.org/ConsentSystems/mango-micro/mango-service/registry"
@@ -19,19 +21,24 @@ type Service interface {
 
 // MangoService represents a service using mangos sockets
 type MangoService struct {
-	socket   mangos.Socket
-	registry registry.Registry
-	ID       string
-	logger   logging.Logger
+	socket        mangos.Socket
+	registry      registry.Registry
+	ID            string
+	logger        logging.Logger
+	keepAliveTime time.Duration
 }
 
 // NewMangoService creates a new mango service
-func NewMangoService(sock mangos.Socket, reg registry.Registry) Service {
+func NewMangoService(
+	sock mangos.Socket,
+	reg registry.Registry,
+) Service {
 
 	return &MangoService{
-		socket:   sock,
-		registry: reg,
-		logger:   logger.NewBasicLogger(),
+		socket:        sock,
+		registry:      reg,
+		logger:        logger.NewBasicLogger(),
+		keepAliveTime: time.Second * 20,
 	}
 }
 
@@ -63,4 +70,8 @@ func (mgs *MangoService) Logger() logging.Logger {
 // SetLogger sets the internl logger
 func (mgs *MangoService) SetLogger(lgr logging.Logger) {
 	mgs.logger = lgr
+}
+
+func (mgs *MangoService) SetKeepAlive(kplt time.Duration) {
+	mgs.keepAliveTime = kplt
 }

@@ -17,6 +17,7 @@ func New` + srvName + ` (
 	portStr string,
 	hdl  ` + t.Name.Name + `,
 	serviceName string,
+	kplv int,
 ) (puller.Server, error) {
 
 	serviceNmsp := serviceName
@@ -32,7 +33,7 @@ func New` + srvName + ` (
 		"1",
 	)
 
-	pullserver.AddTransport(inproc.NewTransport())
+	pullserver.AddTransport(inproc.NewTransport())	
 	pullserver.AddTransport(tcp.NewTransport())
 
 	handler := handler.NewHandler()

@@ -24,6 +24,9 @@
 #   go-tests = true
 #   unused-packages = true
 
+[[constraint]]
+  name = "nanomsg.org/go-mangos"
+  revision= "c9ea146"
 
 [prune]
   go-tests = true

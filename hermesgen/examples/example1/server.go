@@ -17,6 +17,7 @@ func NewAPICallsHandlerServer(
 	portStr string,
 	hdl APICallsHandler,
 	serviceName string,
+	kplv int,
 ) (puller.Server, error) {
 
 	serviceNmsp := serviceName

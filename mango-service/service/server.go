@@ -28,7 +28,10 @@ type MangoServer struct {
 }
 
 // NewMangoServer creates a new mango service
-func NewMangoServer(sock mangos.Socket, reg registry.Registry) Server {
+func NewMangoServer(
+	sock mangos.Socket,
+	reg registry.Registry,
+) Server {
 	service := NewMangoService(sock, reg).(*MangoService)
 	return &MangoServer{
 		MangoService: *service,
@@ -40,9 +43,18 @@ func (mgs *MangoServer) Run(name, addr string, port int, transport string, versi
 
 	url := fmt.Sprintf("%s://%s:%d", transport, addr, port)
 	fmt.Println("URL IS ", url)
-	if err := mgs.socket.Listen(url); err != nil {
+
+	lstnr, err := mgs.socket.NewListener(url, map[string]interface{}{})
+	if err != nil {
+		os.Exit(1)
+	}
+	lstnr.SetOption(mangos.OptionKeepAlive, true)
+	lstnr.SetOption(mangos.OptionKeepAliveTime, mgs.keepAliveTime)
+
+	if err := lstnr.Listen(); err != nil {
 		log.Fatal("can't listen on socket:", err.Error())
 	}
+
 	if version == "" {
 		version = "1"
 	}

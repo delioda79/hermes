@@ -113,7 +113,6 @@ func (reps *defaultServer) Run(port int, transport, addr string) {
 				msg.Params = body
 				bts, _ = json.Marshal(msg)
 				response := mangos.NewMessage(len(bts))
-				//response := mangos.Message(*origMsg)
 				response.Body = bts
 				response.Header = (*origMsg).Header
 				time.Sleep(time.Microsecond * 5)

@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"os"
 	"time"
 
 	"bitbucket.org/ConsentSystems/mango-micro/mango-service/registry"
@@ -21,7 +22,10 @@ type MangoClient struct {
 }
 
 // NewMangoClient creates a new mango service
-func NewMangoClient(sock mangos.Socket, reg registry.Registry) Client {
+func NewMangoClient(
+	sock mangos.Socket,
+	reg registry.Registry,
+) Client {
 
 	service := NewMangoService(sock, reg).(*MangoService)
 	return &MangoClient{
@@ -52,7 +56,14 @@ func (mgc *MangoClient) connect(name string, version string, transport string) e
 					continue OUTER
 				}
 			}
-			err := mgc.socket.Dial(connStr)
+			dlr, err := mgc.socket.NewDialer(connStr, map[string]interface{}{})
+			if err != nil {
+				os.Exit(1)
+			}
+
+			dlr.SetOption(mangos.OptionKeepAlive, true)
+			dlr.SetOption(mangos.OptionKeepAliveTime, mgc.keepAliveTime)
+			err = dlr.Dial()
 			if err != nil {
 				fmt.Println("Conn error", err.Error())
 			}
